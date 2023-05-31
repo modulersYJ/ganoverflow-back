@@ -9,7 +9,7 @@ import { UserModule } from "./user/user.module";
     TypeOrmModule.forRoot({
       type: "postgres",
       // host: "118.67.134.211",
-      host: "localhost",
+      host: "db",
       port: 5432,
       username: "modulers",
       password: "inssafood",

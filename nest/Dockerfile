@@ -6,13 +6,16 @@ WORKDIR /ganoverflow-back
 COPY package.json package-lock.json ./
 
 # Dependency Install
-RUN npm ci
+RUN npm install
 
 # Copy source code
 COPY . .
 
 # 항상 dist갱신
 RUN npm run build
+
+# Rebuild native modules in the container
+RUN npm rebuild
 
 # PORT (8080) Expose
 EXPOSE 8080

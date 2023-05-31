@@ -1,7 +1,7 @@
 version: "1"
 services:
   nest:
-    image: choseongwoo/ganoverflow-back:v0530-2
+    image: choseongwoo/ganoverflow-back:v0531-1-initdb
     container_name: nest
     #volumes:
     #  - ./src:/app/src
@@ -10,7 +10,8 @@ services:
       - "3000:3000"
     networks:
       - app-network
-
+    depends_on:
+      - db
   nginx:
     container_name: nginx-nest
     image: nginx:1.19.0-alpine
@@ -23,7 +24,18 @@ services:
     networks:
       - app-network
 
-  # db:
+  db:
+    image: postgres:13
+    restart: always
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+
+    environment:
+      POSTGRES_USER: modulers
+      POSTGRES_PASSWORD: inssafood
+      POSTGRES_DB: ganoverflow
+    networks:
+      - app-network
 networks:
   app-network:
     driver: bridge
