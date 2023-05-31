@@ -1,4 +1,8 @@
-import { Injectable } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import * as bcrypt from "bcrypt";
@@ -18,22 +22,30 @@ export class UserService {
   }
 
   async register(registerUserDto: RegisterUserDto): Promise<User> {
-    const user = new User();
+    // const user = new User();
 
     // 패스워드 해싱
     const hashedPassword = await bcrypt.hash(registerUserDto.password, 10);
 
-    user.username = registerUserDto.username;
-    user.password = hashedPassword;
-    user.nickname = registerUserDto.nickname;
-    user.status = "N";
-    user.gender = registerUserDto.gender;
-    user.birth_date = registerUserDto.birth_date;
-    user.svc_use_pcy_agmt = registerUserDto.svc_use_pcy_agmt;
-    user.ps_info_proc_agmt = registerUserDto.ps_info_proc_agmt;
-    user.mkt_info_recv_agmt = registerUserDto.mkt_info_recv_agmt;
-    user.provider = null;
-    user.social_id = null;
+    // user.username = registerUserDto.username;
+    // user.password = hashedPassword;
+    // user.nickname = registerUserDto.nickname;
+    // user.status = "N";
+    // user.gender = registerUserDto.gender;
+    // user.birth_date = registerUserDto.birth_date;
+    // user.svc_use_pcy_agmt = registerUserDto.svc_use_pcy_agmt;
+    // user.ps_info_proc_agmt = registerUserDto.ps_info_proc_agmt;
+    // user.mkt_info_recv_agmt = registerUserDto.mkt_info_recv_agmt;
+    // user.provider = null;
+    // user.social_id = null;
+
+    const user = {
+      ...registerUserDto,
+      password: hashedPassword,
+      // status: "N",
+      provider: null,
+      social_id: null,
+    };
 
     // 사용자 저장 및 반환
     return this.usersRepository.save(user);
@@ -48,7 +60,7 @@ export class UserService {
       !user ||
       !(await bcrypt.compare(loginUserDto.password, user.password))
     ) {
-      throw new Error("Invalid username or password");
+      throw new BadRequestException("Invalid username or password");
     }
 
     return user;
