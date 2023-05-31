@@ -1,8 +1,9 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
-import { ApiTags } from '@nestjs/swagger';
+/* eslint-disable prettier/prettier */
+import { Controller, Get } from "@nestjs/common";
+import { AppService } from "./app.service";
+import { ApiTags } from "@nestjs/swagger";
 
-@ApiTags('main')
+@ApiTags("main")
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
@@ -12,7 +13,7 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Get('bye')
+  @Get("bye")
   getBye(): string {
     return this.appService.getBye();
   }

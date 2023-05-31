@@ -1,0 +1,29 @@
+version: "1"
+services:
+  nest:
+    image: choseongwoo/ganoverflow-back:v0530-2
+    container_name: nest
+    #volumes:
+    #  - ./src:/app/src
+    #  - .env:/app/.env
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+
+  nginx:
+    container_name: nginx-nest
+    image: nginx:1.19.0-alpine
+    depends_on:
+      - nest
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - app-network
+
+  # db:
+networks:
+  app-network:
+    driver: bridge
