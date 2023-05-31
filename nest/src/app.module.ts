@@ -8,8 +8,7 @@ import { UserModule } from "./user/user.module";
   imports: [
     TypeOrmModule.forRoot({
       type: "postgres",
-      // host: "118.67.134.211",
-      host: "db",
+      host: "118.67.134.211",
       port: 5432,
       username: "modulers",
       password: "inssafood",
