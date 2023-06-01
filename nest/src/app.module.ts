@@ -7,6 +7,7 @@ import { AuthModule } from "./auth/auth.module";
 import { APP_GUARD } from "@nestjs/core";
 import { AuthGuard } from "./auth/auth.guard";
 import { ChatbotModule } from "./chatbot/chatbot.module";
+import { ConversationsModule } from './conversations/conversations.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ChatbotModule } from "./chatbot/chatbot.module";
     UserModule,
     AuthModule,
     ChatbotModule,
+    ConversationsModule,
   ],
 
   controllers: [AppController],
