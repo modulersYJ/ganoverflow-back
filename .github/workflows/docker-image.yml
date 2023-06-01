@@ -17,7 +17,7 @@ jobs:
         uses: docker/setup-buildx-action@v1
 
       - name: Set image name with date
-        run: echo "IMAGE_NAME=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+        run: echo "IMAGE_NAME=ganoverflow:$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
 
       - name: Build Docker image
         run: cd nest && docker build -t ${{ env.IMAGE_NAME }} . && cd ../
@@ -35,4 +35,4 @@ jobs:
           script: |
             docker-compose down
             docker images | awk 'NR>4 {print $3}' | xargs docker rmi -f
-            docker run -d --name your-container-name -p 80:80 your-image-name
+            docker-compose up --build -d ${{ env.IMAGE_NAME }}
