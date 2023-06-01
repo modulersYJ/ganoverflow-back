@@ -34,5 +34,5 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
             docker-compose down
-            docker images | awk 'NR>4 {print $3}' | xargs docker rmi -f
+            docker images | awk 'NR>4 {print $3}' | xargs docker rmi -f || true
             docker-compose up --build -d ${{ env.IMAGE_NAME }}
