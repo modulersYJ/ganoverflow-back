@@ -38,4 +38,5 @@ jobs:
             if [ -n "$images" ]; then
               echo "$images" | xargs docker rmi -f
             fi
+            cd ganoverflow-back
             docker-compose up --build -d ${{ env.IMAGE_NAME }}
