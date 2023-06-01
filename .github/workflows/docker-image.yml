@@ -20,7 +20,7 @@ jobs:
         run: echo "IMAGE_NAME=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
 
       - name: Build Docker image
-        run: docker build -t ${{ env.IMAGE_NAME }} .
+        run: cd nest && docker build -t ${{ env.IMAGE_NAME }} . && cd ../
 
       - name: Modify docker-compose.yml
         run: |

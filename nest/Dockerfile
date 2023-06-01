@@ -1,7 +1,7 @@
 # Match with my local Node Version
 FROM node:16-alpine
 
-WORKDIR /ganoverflow-back
+WORKDIR /ganoverflow-back/nest
 
 COPY package.json package-lock.json ./
 
