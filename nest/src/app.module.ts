@@ -6,7 +6,7 @@ import { UserModule } from "./user/user.module";
 import { AuthModule } from "./auth/auth.module";
 import { APP_GUARD } from "@nestjs/core";
 import { AuthGuard } from "./auth/auth.guard";
-import { ChatbotModule } from './chatbot/chatbot.module';
+import { ChatbotModule } from "./chatbot/chatbot.module";
 
 @Module({
   imports: [
@@ -24,14 +24,14 @@ import { ChatbotModule } from './chatbot/chatbot.module';
     AuthModule,
     ChatbotModule,
   ],
-  
+
   controllers: [AppController],
   providers: [
     AppService,
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: AuthGuard,
+    // },
   ],
 })
 export class AppModule {}
