@@ -1,16 +1,38 @@
-name: Docker Image CI
+name: Build and Deploy
 
 on:
   push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Set image name with date
+        run: echo "IMAGE_NAME=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+
+      - name: Build Docker image
+        run: docker build -t ${{ env.IMAGE_NAME }} .
+
+      - name: Modify docker-compose.yml
+        run: |
+          sed -i "s|image: \${here}|image: ${{ env.IMAGE_NAME }}|" docker-compose.yml
+
+      - name: SSH Remote Commands
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: 118.67.134.211
+          username: ${{ secrets.SERVER_USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          script: |
+            docker images | awk 'NR>4 {print $3}' | xargs docker rmi -f
+            docker-compose down || true
+            docker run -d --name your-container-name -p 80:80 your-image-name
