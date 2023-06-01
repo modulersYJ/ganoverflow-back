@@ -43,11 +43,11 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
             cd ganoverflow
+            docker pull ${{ env.IMAGE_NAME }}
             docker-compose down
             images=$(docker images | awk 'NR>4 {print $3}')
             if [ -n "$images" ]; then
               echo "$images" | xargs docker rmi -f
             fi
-            docker pull ${{ env.IMAGE_NAME }}
             sed -i '/nest:/,/image: / s|\(image: \).*|\1'"${{ env.IMAGE_NAME }}"'|' docker-compose.yml
             docker-compose up --build -d
