@@ -12,15 +12,15 @@ export class ConversationsService {
     return `This action returns all conversations`;
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return `This action returns a #${id} conversation`;
   }
 
-  update(id: number, updateConversationDto: UpdateConversationDto) {
+  update(id: string, updateConversationDto: UpdateConversationDto) {
     return `This action updates a #${id} conversation`;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} conversation`;
   }
 }

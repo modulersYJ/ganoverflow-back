@@ -1,6 +1,5 @@
 import { Body, Controller, Post } from "@nestjs/common";
 import { ChatbotService } from "./chatbot.service";
-import { SkipAuth } from "src/auth/auth.decorator";
 import { ApiBody, ApiOperation, ApiTags } from "@nestjs/swagger";
 
 @ApiTags("chatbot")
