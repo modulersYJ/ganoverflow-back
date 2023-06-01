@@ -33,6 +33,6 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
-            docker images | awk 'NR>4 {print $3}' | xargs docker rmi -f
             docker-compose down || true
+            docker images | awk 'NR>4 {print $3}' | xargs docker rmi -f
             docker run -d --name your-container-name -p 80:80 your-image-name
