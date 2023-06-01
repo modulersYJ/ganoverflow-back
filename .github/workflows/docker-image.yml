@@ -22,9 +22,8 @@ jobs:
       - name: Build Docker image
         run: cd nest && docker build -t ${{ env.IMAGE_NAME }} . && cd ../
 
-      - name: Modify docker-compose.yml
-        run: |
-          sed -i "s|image: \${here}|image: ${{ env.IMAGE_NAME }}|" docker-compose.yml
+      # - name: Modify docker-compose.yml
+      #   run: |
 
       - name: SSH Remote Commands
         uses: appleboy/ssh-action@v0.1.10
@@ -38,5 +37,6 @@ jobs:
             if [ -n "$images" ]; then
               echo "$images" | xargs docker rmi -f
             fi
-            cd ganoverflow-back
+            cd ganoverflow
+            sed -i "s|image: \${here}|image: ${{ env.IMAGE_NAME }}|" docker-compose.yml
             docker-compose up --build -d ${{ env.IMAGE_NAME }}
