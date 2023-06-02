@@ -1,8 +1,8 @@
-import { Test, TestingModule } from "@nestjs/testing";
-import { FollowsController } from "./follows.controller";
-import { FollowsService } from "./follows.service";
+import { Test, TestingModule } from '@nestjs/testing';
+import { FollowsController } from './follows.controller';
+import { FollowsService } from './follows.service';
 
-describe("FollowsController", () => {
+describe('FollowsController', () => {
   let controller: FollowsController;
 
   beforeEach(async () => {
@@ -14,7 +14,7 @@ describe("FollowsController", () => {
     controller = module.get<FollowsController>(FollowsController);
   });
 
-  it("should be defined", () => {
+  it('should be defined', () => {
     expect(controller).toBeDefined();
   });
 });

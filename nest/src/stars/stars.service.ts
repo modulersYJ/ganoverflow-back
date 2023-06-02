@@ -1,11 +1,11 @@
-import { Injectable } from "@nestjs/common";
-import { CreateStarDto } from "./dto/create-star.dto";
-import { UpdateStarDto } from "./dto/update-star.dto";
+import { Injectable } from '@nestjs/common';
+import { CreateStarDto } from './dto/create-star.dto';
+import { UpdateStarDto } from './dto/update-star.dto';
 
 @Injectable()
 export class StarsService {
   create(createStarDto: CreateStarDto) {
-    return "This action adds a new star";
+    return 'This action adds a new star';
   }
 
   findAll() {

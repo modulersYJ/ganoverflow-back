@@ -1,11 +1,11 @@
-import { Injectable } from "@nestjs/common";
-import { CreateFavoritecategoryDto } from "./dto/create-favoritecategory.dto";
-import { UpdateFavoritecategoryDto } from "./dto/update-favoritecategory.dto";
+import { Injectable } from '@nestjs/common';
+import { CreateFavoritecategoryDto } from './dto/create-favoritecategory.dto';
+import { UpdateFavoritecategoryDto } from './dto/update-favoritecategory.dto';
 
 @Injectable()
 export class FavoritecategoriesService {
   create(createFavoritecategoryDto: CreateFavoritecategoryDto) {
-    return "This action adds a new favoritecategory";
+    return 'This action adds a new favoritecategory';
   }
 
   findAll() {

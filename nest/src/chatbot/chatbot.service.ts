@@ -1,5 +1,5 @@
-import { Injectable } from "@nestjs/common";
-import { Configuration, OpenAIApi } from "openai";
+import { Injectable } from '@nestjs/common';
+import { Configuration, OpenAIApi } from 'openai';
 
 @Injectable()
 export class ChatbotService {

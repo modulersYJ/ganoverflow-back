@@ -1,11 +1,11 @@
-import { Injectable } from "@nestjs/common";
-import { CreateChatpostDto } from "./dto/create-chatpost.dto";
-import { UpdateChatpostDto } from "./dto/update-chatpost.dto";
+import { Injectable } from '@nestjs/common';
+import { CreateChatpostDto } from './dto/create-chatpost.dto';
+import { UpdateChatpostDto } from './dto/update-chatpost.dto';
 
 @Injectable()
 export class ChatpostsService {
   create(createChatpostDto: CreateChatpostDto) {
-    return "This action adds a new chatpost";
+    return 'This action adds a new chatpost';
   }
 
   findAll() {
