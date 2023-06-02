@@ -12,14 +12,16 @@ async function bootstrap() {
     .setDescription("Swagger UI of GanOverflow Backend (NestJS)")
     .setVersion("1.0.0")
     .addTag("swagger")
-    .addBearerAuth({
-      type: "http",
-      scheme: "bearer",
-      bearerFormat: "JWT",
-      name: "JWT",
-      description: "Enter JWT token",
-      in: "header",
-    })
+    .addBearerAuth(
+      {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+        description: "Enter JWT token",
+        in: "headers",
+      },
+      "jwt"
+    )
     .build();
   // config 바탕으로 swagger document 생성
   const document = SwaggerModule.createDocument(app, config);

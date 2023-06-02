@@ -1,17 +1,17 @@
-import { Body, Controller, Post, Get, Param } from "@nestjs/common";
+import { Body, Controller, Post, Get, Param, UseGuards } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { User } from "src/entities/user.entity";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { LoginUserDto } from "./dto/login-user.dto";
 import { RegisterUserDto } from "./dto/register-user.dto";
-import { SkipAuth } from "src/auth/auth.decorator";
+import { AuthGuard } from "src/auth/auth.guard";
 
 @ApiTags("user")
 @Controller("user")
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Get("mypage/:userId")
   @ApiOperation({
     summary: "마이페이지",
@@ -21,7 +21,6 @@ export class UserController {
     return this.userService.myPage(userId);
   }
 
-  @SkipAuth()
   @Post("register")
   @ApiOperation({
     summary: "회원가입",
@@ -31,7 +30,6 @@ export class UserController {
     return this.userService.register(registerUserDto);
   }
 
-  @SkipAuth()
   @Post("login")
   @ApiOperation({
     summary: "사용자 login",

@@ -13,7 +13,7 @@ import { jwtConstants } from "./constants";
     JwtModule.register({
       global: true, // jwt모듈을 글로벌하게 등록 - 다른 모듈에서 import 안해도 쓸 수 있다!
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: "60s" },
+      signOptions: { expiresIn: "6000s" },
     }),
   ],
   controllers: [AuthController],
