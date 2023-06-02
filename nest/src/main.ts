@@ -4,7 +4,16 @@ import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { ValidationPipe } from "@nestjs/common";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    cors: {
+      origin: [
+        "https://ganoverflow.vercel.app/", // for deploy : 이 경우 백엔드 nginx에 SSL 적용해야 합니다(도메인선행)
+        "*", // for dev : 이경우 vercel배포된 클라이언트로는 https보장 안돼서 불가!, local next와 통신 가능
+      ],
+      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      credentials: true,
+    },
+  });
 
   // swagger UI 위한 설정
   const config = new DocumentBuilder()
