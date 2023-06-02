@@ -7,15 +7,13 @@ import { AuthModule } from "./auth/auth.module";
 import { APP_GUARD } from "@nestjs/core";
 import { AuthGuard } from "./auth/auth.guard";
 import { ChatbotModule } from "./chatbot/chatbot.module";
-import { CommentsModule } from './comments/comments.module';
-import { CommentLikeModule } from './comment-like/comment-like.module';
-import { FollowModule } from './follow/follow.module';
-import { CategoriesModule } from './categories/categories.module';
-import { FollowsModule } from './follows/follows.module';
-import { StarsModule } from './stars/stars.module';
-import { ChatpostsModule } from './chatposts/chatposts.module';
-import { CommentlikesModule } from './commentlikes/commentlikes.module';
-import { FavoritecategoriesModule } from './favoritecategories/favoritecategories.module';
+import { CommentsModule } from "./comments/comments.module";
+import { CategoriesModule } from "./categories/categories.module";
+import { FollowsModule } from "./follows/follows.module";
+import { StarsModule } from "./stars/stars.module";
+import { ChatpostsModule } from "./chatposts/chatposts.module";
+import { CommentlikesModule } from "./commentlikes/commentlikes.module";
+import { FavoritecategoriesModule } from "./favoritecategories/favoritecategories.module";
 
 @Module({
   imports: [
@@ -33,8 +31,6 @@ import { FavoritecategoriesModule } from './favoritecategories/favoritecategorie
     AuthModule,
     ChatbotModule,
     CommentsModule,
-    CommentLikeModule,
-    FollowModule,
     CategoriesModule,
     FollowsModule,
     StarsModule,

@@ -1,8 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { FavoritecategoriesController } from './favoritecategories.controller';
-import { FavoritecategoriesService } from './favoritecategories.service';
+import { Test, TestingModule } from "@nestjs/testing";
+import { FavoritecategoriesController } from "./favoritecategories.controller";
+import { FavoritecategoriesService } from "./favoritecategories.service";
 
-describe('FavoritecategoriesController', () => {
+describe("FavoritecategoriesController", () => {
   let controller: FavoritecategoriesController;
 
   beforeEach(async () => {
@@ -11,10 +11,12 @@ describe('FavoritecategoriesController', () => {
       providers: [FavoritecategoriesService],
     }).compile();
 
-    controller = module.get<FavoritecategoriesController>(FavoritecategoriesController);
+    controller = module.get<FavoritecategoriesController>(
+      FavoritecategoriesController
+    );
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(controller).toBeDefined();
   });
 });

@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import { CreateFollowDto } from './dto/create-follow.dto';
-import { UpdateFollowDto } from './dto/update-follow.dto';
+import { Injectable } from "@nestjs/common";
+import { CreateFollowDto } from "./dto/create-follow.dto";
+import { UpdateFollowDto } from "./dto/update-follow.dto";
 
 @Injectable()
 export class FollowsService {
   create(createFollowDto: CreateFollowDto) {
-    return 'This action adds a new follow';
+    return "This action adds a new follow";
   }
 
   findAll() {

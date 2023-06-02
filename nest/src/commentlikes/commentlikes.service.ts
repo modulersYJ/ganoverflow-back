@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import { CreateCommentlikeDto } from './dto/create-commentlike.dto';
-import { UpdateCommentlikeDto } from './dto/update-commentlike.dto';
+import { Injectable } from "@nestjs/common";
+import { CreateCommentlikeDto } from "./dto/create-commentlike.dto";
+import { UpdateCommentlikeDto } from "./dto/update-commentlike.dto";
 
 @Injectable()
 export class CommentlikesService {
   create(createCommentlikeDto: CreateCommentlikeDto) {
-    return 'This action adds a new commentlike';
+    return "This action adds a new commentlike";
   }
 
   findAll() {
