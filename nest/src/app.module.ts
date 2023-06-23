@@ -7,17 +7,24 @@ import { AuthModule } from "./auth/auth.module";
 import { APP_GUARD } from "@nestjs/core";
 import { AuthGuard } from "./auth/auth.guard";
 import { ChatbotModule } from "./chatbot/chatbot.module";
-import { ConversationsModule } from './conversations/conversations.module';
+import { ConversationsModule } from "./conversations/conversations.module";
+import { ConfigModule, ConfigService } from "@nestjs/config";
+import * as Joi from "joi";
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: process.env.NODE_ENV == "dev" ? ".env.dev" : ".env.prod",
+    }),
+
     TypeOrmModule.forRoot({
       type: "postgres",
-      host: "118.67.134.211",
-      port: 5432,
-      username: "modulers",
-      password: "inssafood",
-      database: "ganoverflow",
+      host: process.env.DB_HOST,
+      port: +process.env.DB_PORT,
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
       entities: [__dirname + "/**/*.entity{.ts,.js}"],
       synchronize: true,
     }),

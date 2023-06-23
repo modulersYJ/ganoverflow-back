@@ -2,6 +2,20 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { ValidationPipe } from "@nestjs/common";
+import { Logger } from "@nestjs/common";
+
+import dotenv = require("dotenv");
+import path = require("path");
+dotenv.config();
+
+// 환경 별 .env 파일 동작 분기
+if (process.env.NODE_ENV === "prod") {
+  Logger.log("서버가 프로덕션 환경에서 동작합니다.");
+  dotenv.config({ path: path.join(__dirname, "../.env.local") });
+} else if (process.env.NODE_ENV === "dev") {
+  Logger.log("서버가 개발 환경에서 동작합니다.");
+  dotenv.config({ path: path.join(__dirname, "../.env.dev") });
+}
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -14,6 +28,11 @@ async function bootstrap() {
       credentials: true,
     },
   });
+
+  // console.log("주입된 환경 변수: " + process.env.DB_HOST);
+  // console.log("주입된 환경 변수: " + process.env.DB_PORT);
+  // console.log("주입된 환경 변수: " + process.env.DB_USERNAME);
+  // console.log("주입된 환경 변수: " + process.env.DB_PASSWORD);
 
   // swagger UI 위한 설정
   const config = new DocumentBuilder()
