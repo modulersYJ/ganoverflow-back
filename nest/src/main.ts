@@ -21,7 +21,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: {
       origin: [
-        "https://ganoverflow.com", // for prod
+        "https://www.ganoverflow.com", // for prod
         "http://localhost:3000", // for dev : 이경우 vercel배포된 클라이언트로는 https보장 안돼서 불가!, local next와 통신 가능
       ],
       methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
