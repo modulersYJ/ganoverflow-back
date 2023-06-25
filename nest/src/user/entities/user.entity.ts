@@ -1,7 +1,16 @@
+import { Category } from "src/categories/entities/category.entity";
+import { Chatpost } from "src/chatposts/entities/chatpost.entity";
+import { Comment } from "src/comments/entities/comment.entity";
+import { Follow } from "src/follows/entities/follow.entity";
+import { Star } from "src/stars/entities/star.entity";
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   Unique,
 } from "typeorm";
@@ -9,14 +18,17 @@ import {
 @Entity()
 @Unique(["username"]) // 'username'는 unique해야 함
 export class User {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn("uuid")
   id: number;
+
+  @Column({ length: 150, default: "user123" })
+  username: string;
 
   @Column({ type: "varchar", nullable: false })
   password: string;
 
-  @Column({ length: 150, default: "user123" })
-  username: string;
+  @Column({ length: 150, nullable: true }) // false 여야 하는데 에러남. 디비 함 밀어야 할듯.
+  email: string;
 
   @Column({ length: 100 })
   nickname: string;
@@ -71,4 +83,16 @@ export class User {
 
   @Column({ length: 200, nullable: true })
   social_id: string;
+
+  @OneToMany(() => Chatpost, (chatpost) => chatpost.userId)
+  chatposts: Chatpost[];
+
+  @OneToMany(() => Comment, (comment) => comment.userId)
+  comments: Comment[];
+
+  @OneToMany(() => Follow, (follow) => follow.followId)
+  followerId: Follow[];
+
+  @OneToMany(() => Follow, (follow) => follow.followId)
+  followeeId: Follow[];
 }
