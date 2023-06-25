@@ -36,3 +36,5 @@ lerna-debug.log*
 
 # env파일 제외
 .env.*
+.env.dev
+.env.prod
