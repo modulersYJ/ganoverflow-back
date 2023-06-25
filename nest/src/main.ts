@@ -22,7 +22,7 @@ async function bootstrap() {
     cors: {
       origin: [
         "https://ganoverflow.vercel.app/", // for deploy : 이 경우 백엔드 nginx에 SSL 적용해야 합니다(도메인선행)
-        "*", // for dev : 이경우 vercel배포된 클라이언트로는 https보장 안돼서 불가!, local next와 통신 가능
+        "http://localhost:3000", // for dev : 이경우 vercel배포된 클라이언트로는 https보장 안돼서 불가!, local next와 통신 가능
       ],
       methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
       credentials: true,

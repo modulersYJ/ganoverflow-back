@@ -1,7 +1,7 @@
 version: "1"
 services:
   nest:
-    image: choseongwoo/ganoverflow-back:v0531-1-initdb
+    image: choseongwoo/ganoverflow-back:v0626-1
     container_name: nest
     #volumes:
     #  - ./src:/app/src
