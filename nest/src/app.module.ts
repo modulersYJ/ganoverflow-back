@@ -7,7 +7,12 @@ import { AuthModule } from "./auth/auth.module";
 import { APP_GUARD } from "@nestjs/core";
 import { AuthGuard } from "./auth/auth.guard";
 import { ChatbotModule } from "./chatbot/chatbot.module";
-import { ConversationsModule } from './conversations/conversations.module';
+import { CommentsModule } from "./comments/comments.module";
+import { CategoriesModule } from "./categories/categories.module";
+import { FollowsModule } from "./follows/follows.module";
+import { StarsModule } from "./stars/stars.module";
+import { ChatpostsModule } from "./chatposts/chatposts.module";
+import { FavoritecategoriesModule } from "./favoritecategories/favoritecategories.module";
 
 @Module({
   imports: [
@@ -24,7 +29,12 @@ import { ConversationsModule } from './conversations/conversations.module';
     UserModule,
     AuthModule,
     ChatbotModule,
-    ConversationsModule,
+    CommentsModule,
+    CategoriesModule,
+    FollowsModule,
+    StarsModule,
+    ChatpostsModule,
+    FavoritecategoriesModule,
   ],
 
   controllers: [AppController],
