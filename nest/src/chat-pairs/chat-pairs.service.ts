@@ -1,11 +1,31 @@
-import { Injectable } from '@nestjs/common';
-import { CreateChatPairDto } from './dto/create-chat-pair.dto';
-import { UpdateChatPairDto } from './dto/update-chat-pair.dto';
+import { Injectable } from "@nestjs/common";
+import { CreateChatPairDto } from "./dto/create-chat-pair.dto";
+import { UpdateChatPairDto } from "./dto/update-chat-pair.dto";
+import { Repository } from "typeorm";
+import { ChatPair } from "./entities/chat-pair.entity";
+import { InjectRepository } from "@nestjs/typeorm";
+import { CreateChatpostDto } from "src/chatposts/dto/create-chatpost.dto";
+import { ChatpostsService } from "src/chatposts/chatposts.service";
+import { Chatpost } from "src/chatposts/entities/chatpost.entity";
 
 @Injectable()
 export class ChatPairsService {
-  create(createChatPairDto: CreateChatPairDto) {
-    return 'This action adds a new chatPair';
+  constructor(
+    @InjectRepository(ChatPair)
+    private readonly chatPairRepository: Repository<ChatPair>
+  ) {}
+  async create(createChatPairDto: CreateChatpostDto[], chatPost: Chatpost) {
+    const savedPairs = createChatPairDto.map(async (pair, idx) => {
+      const chatPair = {
+        chatPost: chatPost,
+        question: pair.question,
+        answer: pair.answer,
+        order: idx,
+      };
+      const savedPairs = await this.chatPairRepository.save(chatPair);
+      return savedPairs;
+    });
+    return savedPairs;
   }
 
   findAll() {

@@ -21,6 +21,14 @@ export class UserService {
     return `My page of ${userId} `;
   }
 
+  async findOneById(id: number): Promise<User> {
+    return this.usersRepository.findOneBy({ id });
+  }
+
+  async findOneByUsername(username: string): Promise<User> {
+    return this.usersRepository.findOneBy({ username });
+  }
+
   async register(registerUserDto: RegisterUserDto): Promise<User> {
     // const user = new User();
 

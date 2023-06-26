@@ -22,7 +22,9 @@ export class Chatpost {
   @JoinColumn({ name: "userId" })
   userId: User;
 
-  @ManyToOne(() => Category, (category) => category.categoryName)
+  @ManyToOne(() => Category, (category) => category.categoryName, {
+    nullable: true,
+  })
   @JoinColumn({ name: "categoryName" })
   categoryName: Category;
 
@@ -31,11 +33,11 @@ export class Chatpost {
 
   @Column({
     type: "enum",
-    enum: ["Y" || "N"],
+    enum: ["Y", "N"],
   })
   delYn: string;
 
-  @ManyToOne(() => Folder, (folder) => folder.chatposts)
+  @ManyToOne(() => Folder, (folder) => folder.chatposts, { nullable: true })
   folder: Folder;
 
   @OneToMany(() => ChatPair, (chatPair) => chatPair.chatPairId)

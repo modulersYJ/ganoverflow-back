@@ -1,11 +1,31 @@
-import { Injectable } from '@nestjs/common';
-import { CreateChatpostDto } from './dto/create-chatpost.dto';
-import { UpdateChatpostDto } from './dto/update-chatpost.dto';
+import { Injectable } from "@nestjs/common";
+import { CreateChatpostDto } from "./dto/create-chatpost.dto";
+import { UpdateChatpostDto } from "./dto/update-chatpost.dto";
+import { Repository } from "typeorm";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Chatpost } from "./entities/chatpost.entity";
+import { UserService } from "src/user/user.service";
 
 @Injectable()
 export class ChatpostsService {
-  create(createChatpostDto: CreateChatpostDto) {
-    return 'This action adds a new chatpost';
+  constructor(
+    @InjectRepository(Chatpost)
+    private chatpostRepository: Repository<Chatpost>,
+    private usersService: UserService
+  ) {}
+
+  async create(createChatpostDto: CreateChatpostDto[]) {
+    const user = await this.usersService.findOneByUsername("test");
+
+    const chatpost = {
+      userId: user,
+      createdAt: new Date(),
+      delYn: "N",
+      folder: null,
+    };
+
+    const savedPost = await this.chatpostRepository.save(chatpost);
+    return savedPost;
   }
 
   findAll() {

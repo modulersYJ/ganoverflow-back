@@ -1,9 +1,15 @@
-import { Module } from '@nestjs/common';
-import { ChatpostsService } from './chatposts.service';
-import { ChatpostsController } from './chatposts.controller';
+import { Module } from "@nestjs/common";
+import { ChatpostsService } from "./chatposts.service";
+import { ChatpostsController } from "./chatposts.controller";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { Chatpost } from "./entities/chatpost.entity";
+import { ChatPairsModule } from "src/chat-pairs/chat-pairs.module";
+import { UserModule } from "src/user/user.module";
 
 @Module({
+  imports: [TypeOrmModule.forFeature([Chatpost]), ChatPairsModule, UserModule],
   controllers: [ChatpostsController],
-  providers: [ChatpostsService]
+  providers: [ChatpostsService],
+  exports: [ChatpostsService],
 })
 export class ChatpostsModule {}

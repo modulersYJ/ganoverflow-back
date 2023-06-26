@@ -11,15 +11,23 @@ import { ChatpostsService } from "./chatposts.service";
 import { CreateChatpostDto } from "./dto/create-chatpost.dto";
 import { UpdateChatpostDto } from "./dto/update-chatpost.dto";
 import { ApiTags } from "@nestjs/swagger";
+import { ChatPairsService } from "src/chat-pairs/chat-pairs.service";
 
 @ApiTags("chatposts")
 @Controller("chatposts")
 export class ChatpostsController {
-  constructor(private readonly chatpostsService: ChatpostsService) {}
+  constructor(
+    private readonly chatpostsService: ChatpostsService,
+    private readonly chatpairsService: ChatPairsService
+  ) {}
 
   @Post()
-  create(@Body() createChatpostDto: CreateChatpostDto) {
-    return this.chatpostsService.create(createChatpostDto);
+  async create(@Body() createChatpostDto: CreateChatpostDto[]) {
+    console.log("createChatpostDto", createChatpostDto);
+
+    const chatPost = await this.chatpostsService.create(createChatpostDto);
+    // const chatPostId = chatPost.chatPostId
+    await this.chatpairsService.create(createChatpostDto, chatPost);
   }
 
   @Get()
