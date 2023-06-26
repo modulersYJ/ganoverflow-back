@@ -1,4 +1,6 @@
 import { Category } from "src/categories/entities/category.entity";
+import { ChatPair } from "src/chat-pairs/entities/chat-pair.entity";
+import { Folder } from "src/folders/entities/folder.entity";
 import { User } from "src/user/entities/user.entity";
 import {
   Column,
@@ -32,4 +34,10 @@ export class Chatpost {
     enum: ["Y" || "N"],
   })
   delYn: string;
+
+  @ManyToOne(() => Folder, (folder) => folder.chatposts)
+  folder: Folder;
+
+  @OneToMany(() => ChatPair, (chatPair) => chatPair.chatPairId)
+  chatPair: ChatPair[];
 }
