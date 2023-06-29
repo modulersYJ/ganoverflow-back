@@ -28,8 +28,14 @@ export class ChatpostsService {
     return savedPost;
   }
 
-  findAll() {
-    return `This action returns all chatposts`;
+  async findAll() {
+    const posts = await this.chatpostRepository.find({
+      relations: {
+        chatPair: true,
+      },
+    });
+    return posts;
+    // return `This action returns all chatposts`;
   }
 
   findOne(id: number) {

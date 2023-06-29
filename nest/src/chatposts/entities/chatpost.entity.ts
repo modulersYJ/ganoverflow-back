@@ -18,6 +18,9 @@ export class Chatpost {
   @PrimaryGeneratedColumn("rowid")
   chatPostId: string;
 
+  @Column()
+  title: string;
+
   @ManyToOne(() => User, (user) => user.chatposts)
   @JoinColumn({ name: "userId" })
   userId: User;
@@ -40,6 +43,7 @@ export class Chatpost {
   @ManyToOne(() => Folder, (folder) => folder.chatposts, { nullable: true })
   folder: Folder;
 
-  @OneToMany(() => ChatPair, (chatPair) => chatPair.chatPairId)
+  @OneToMany(() => ChatPair, (chatPair) => chatPair.chatPost)
+  @JoinColumn({ name: "chatPairId" })
   chatPair: ChatPair[];
 }
