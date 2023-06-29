@@ -17,10 +17,10 @@ import { ApiTags } from "@nestjs/swagger";
 export class ChatPairsController {
   constructor(private readonly chatPairsService: ChatPairsService) {}
 
-  @Post()
-  create(@Body() createChatPairDto: CreateChatPairDto) {
-    return this.chatPairsService.create(createChatPairDto);
-  }
+  // @Post()
+  // create(@Body() createChatPairDto: CreateChatPairDto) {
+  //   return this.chatPairsService.create(createChatPairDto);
+  // }
 
   @Get()
   findAll() {

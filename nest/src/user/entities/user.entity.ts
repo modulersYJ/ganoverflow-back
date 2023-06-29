@@ -7,6 +7,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
   ManyToOne,
@@ -85,14 +86,18 @@ export class User {
   social_id: string;
 
   @OneToMany(() => Chatpost, (chatpost) => chatpost.userId)
+  @JoinColumn({ name: "chatpostId" })
   chatposts: Chatpost[];
 
   @OneToMany(() => Comment, (comment) => comment.userId)
+  @JoinColumn({ name: "commentId" })
   comments: Comment[];
 
   @OneToMany(() => Follow, (follow) => follow.followId)
+  @JoinColumn({ name: "followerId" })
   followerId: Follow[];
 
   @OneToMany(() => Follow, (follow) => follow.followId)
+  @JoinColumn({ name: "followeeId" })
   followeeId: Follow[];
 }
