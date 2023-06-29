@@ -22,9 +22,8 @@ export class ChatpostsController {
   ) {}
 
   @Post()
-  async create(@Body() createChatpostDto: CreateChatpostDto[]) {
-    console.log("createChatpostDto", createChatpostDto);
-
+  async create(@Body() createChatpostDto: CreateChatpostDto) {
+    // ^ chatPosts 먼저 등록 => chatPostTitle 등록, Id 추출
     const chatPost = await this.chatpostsService.create(createChatpostDto);
     // const chatPostId = chatPost.chatPostId
     await this.chatpairsService.create(createChatpostDto, chatPost);

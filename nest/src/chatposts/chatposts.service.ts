@@ -5,6 +5,7 @@ import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Chatpost } from "./entities/chatpost.entity";
 import { UserService } from "src/user/user.service";
+import { CreateChatPairDto } from "src/chat-pairs/dto/create-chat-pair.dto";
 
 @Injectable()
 export class ChatpostsService {
@@ -14,7 +15,7 @@ export class ChatpostsService {
     private usersService: UserService
   ) {}
 
-  async create(createChatpostDto: CreateChatpostDto[]) {
+  async create(createChatpostDto: CreateChatpostDto) {
     const user = await this.usersService.findOneByUsername("test");
 
     const chatpost = {
@@ -22,6 +23,7 @@ export class ChatpostsService {
       createdAt: new Date(),
       delYn: "N",
       folder: null,
+      title: createChatpostDto.title,
     };
 
     const savedPost = await this.chatpostRepository.save(chatpost);

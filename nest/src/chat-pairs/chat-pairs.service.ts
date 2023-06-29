@@ -14,8 +14,8 @@ export class ChatPairsService {
     @InjectRepository(ChatPair)
     private readonly chatPairRepository: Repository<ChatPair>
   ) {}
-  async create(createChatPairDto: CreateChatpostDto[], chatPost: Chatpost) {
-    const savedPairs = createChatPairDto.map(async (pair, idx) => {
+  async create(createChatPostDto: CreateChatpostDto, chatPost: Chatpost) {
+    const savedPairs = createChatPostDto.chatPair.map(async (pair, idx) => {
       const chatPair = {
         chatPost: chatPost,
         question: pair.question,

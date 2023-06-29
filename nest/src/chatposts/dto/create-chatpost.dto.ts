@@ -3,14 +3,8 @@ import { CreateChatPairDto } from "src/chat-pairs/dto/create-chat-pair.dto";
 
 export class CreateChatpostDto {
   @ApiProperty()
-  question: string;
+  title: string;
 
   @ApiProperty()
-  answer: string;
-
-  @ApiProperty()
-  isUser: boolean;
-
-  @ApiProperty()
-  isChecked: boolean;
+  chatPair: CreateChatPairDto[];
 }
