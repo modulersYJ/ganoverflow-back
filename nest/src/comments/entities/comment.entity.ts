@@ -21,7 +21,7 @@ export class Comment {
 
   @ManyToOne(() => User, (user) => user.id)
   //   @JoinColumn()
-  userId: User;
+  user: User;
 
   @ManyToMany(() => User, (user) => user.id)
   @JoinTable({

@@ -10,22 +10,41 @@ import {
 import { CommentsService } from "./comments.service";
 import { CreateCommentDto } from "./dto/create-comment.dto";
 import { UpdateCommentDto } from "./dto/update-comment.dto";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiParam, ApiTags } from "@nestjs/swagger";
+import { ChatpostsService } from "src/chatposts/chatposts.service";
+import { UserService } from "src/user/user.service";
 
 @ApiTags("comments")
 @Controller("comments")
 export class CommentsController {
-  constructor(private readonly commentsService: CommentsService) {}
+  constructor(
+    private readonly commentsService: CommentsService,
+    private readonly chatPostsService: ChatpostsService,
+    private readonly userService: UserService
+  ) {}
 
-  @Post()
-  create(@Body() createCommentDto: CreateCommentDto) {
-    return this.commentsService.create(createCommentDto);
+  @ApiParam({
+    name: "chatPostId",
+    required: true,
+    description: "chatPostId는 parameter로, 커멘트는 body에",
+  })
+  @Post("/:chatPostId")
+  async create(
+    @Param()
+    chatPostId: string,
+    @Body() createCommentDto: CreateCommentDto
+  ) {
+    const chatPost = await this.chatPostsService.findOne(chatPostId);
+    const user = await this.userService.findOneByUsername(
+      createCommentDto.userName
+    );
+    return this.commentsService.create(chatPost, user, createCommentDto);
   }
 
-  @Get()
-  findAll() {
-    return this.commentsService.findAll();
-  }
+  // @Get()
+  // findAll() {
+  //   return this.commentsService.findCommentsByChatPostId("1");
+  // }
 
   @Get(":id")
   findOne(@Param("id") id: string) {
