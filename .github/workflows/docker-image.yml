@@ -41,6 +41,7 @@ jobs:
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: 118.67.134.211
+          command_timeout: 200m
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
