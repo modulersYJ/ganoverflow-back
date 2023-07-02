@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { CreateCommentDto } from "./dto/create-comment.dto";
 import { UpdateCommentDto } from "./dto/update-comment.dto";
+<<<<<<< HEAD
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Comment } from "./entities/comment.entity";
@@ -26,6 +27,12 @@ export class CommentsService {
     };
 
     this.commentsRepository.save(commentToSave);
+=======
+
+@Injectable()
+export class CommentsService {
+  create(createCommentDto: CreateCommentDto) {
+>>>>>>> feat-auth
     return "This action adds a new comment";
   }
 

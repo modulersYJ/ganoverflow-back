@@ -22,7 +22,10 @@ import { ChatPairsModule } from "./chat-pairs/chat-pairs.module";
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: process.env.NODE_ENV == "dev" ? ".env.dev" : ".env.prod",
+      envFilePath:
+        process.env.NODE_ENV == "development"
+          ? ".env.development"
+          : ".env.production",
     }),
 
     TypeOrmModule.forRoot({
@@ -51,10 +54,10 @@ import { ChatPairsModule } from "./chat-pairs/chat-pairs.module";
   controllers: [AppController],
   providers: [
     AppService,
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: AuthGuard,
-    // },
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
   ],
 })
 export class AppModule {}
