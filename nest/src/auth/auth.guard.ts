@@ -22,11 +22,18 @@ export class AuthGuard implements CanActivate {
       context.getHandler(),
       context.getClass(),
     ]);
+
+    // 예외1: @Public 데코레이터 붙인 케이스
     if (isPublic) {
       return true;
     }
 
+    // 예외2: OPTIONS 메서드로 Preflight인 경우
     const request = context.switchToHttp().getRequest();
+    if (request.method === "OPTIONS") {
+      return true;
+    }
+
     const token = this.extractTokenFromHeader(request);
 
     if (!token) {
