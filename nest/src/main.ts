@@ -10,7 +10,7 @@ import path = require("path");
 dotenv.config();
 
 // 환경 별 .env 파일 동작 분기
-if (process.env.NODE_ENV === "produnction") {
+if (process.env.NODE_ENV === "production") {
   Logger.log("서버가 프로덕션 환경에서 동작합니다.");
   dotenv.config({ path: path.join(__dirname, "../.env.production") });
 } else if (process.env.NODE_ENV === "development") {
