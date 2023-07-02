@@ -28,16 +28,11 @@ jobs:
         run: echo "IMAGE_NAME=choseongwoo/ganoverflow-back:$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v2
-        with:
-          context: ./nest
-          push: true
-          tags: ${{ env.IMAGE_NAME }}
-          timeout: 12000
-
-
-      # - name: Modify docker-compose.yml
-      #   run: |
+        run: |
+          cd nest 
+          docker build -t ${{ env.IMAGE_NAME }} . 
+          docker push ${{ env.IMAGE_NAME }}
+          cd ../
 
       - name: SSH Remote Commands
         uses: appleboy/ssh-action@v0.1.10
