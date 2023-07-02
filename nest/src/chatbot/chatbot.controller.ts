@@ -1,7 +1,9 @@
 import { Body, Controller, Post } from "@nestjs/common";
 import { ChatbotService } from "./chatbot.service";
 import { ApiBody, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { Public } from "src/auth/public.decorator";
 
+@Public()
 @ApiTags("chatbot")
 @Controller()
 export class ChatbotController {

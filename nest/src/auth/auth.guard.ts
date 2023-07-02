@@ -1,19 +1,31 @@
 import {
+  Injectable,
   CanActivate,
   ExecutionContext,
-  Injectable,
   UnauthorizedException,
 } from "@nestjs/common";
+import { Observable } from "rxjs";
+import { Reflector } from "@nestjs/core";
 import { JwtService } from "@nestjs/jwt";
+import { IS_PUBLIC_KEY } from "./public.decorator"; // 데코레이터를 가져옵니다.
 import { jwtConstants } from "./constants";
 import { Request } from "express";
-import { Reflector } from "@nestjs/core";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private jwtService: JwtService, private reflector: Reflector) {}
+  constructor(private reflector: Reflector, private jwtService: JwtService) {}
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
+  canActivate(
+    context: ExecutionContext
+  ): boolean | Promise<boolean> | Observable<boolean> {
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+    if (isPublic) {
+      return true;
+    }
+
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
 
@@ -21,14 +33,12 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException("로그인 하세요");
     }
     try {
-      const payload = await this.jwtService.verifyAsync(token, {
+      const payload = this.jwtService.verify(token, {
         secret: jwtConstants.secret,
       });
-      // 💡 We're assigning the payload to the request.headers object here
-      // so that we can access it in our route handlers
-      request["user"] = payload;
-    } catch {
-      throw new UnauthorizedException("로그인 하세요");
+      request.user = payload;
+    } catch (err) {
+      throw new UnauthorizedException("유효하지 않은 토큰입니다.");
     }
     return true;
   }

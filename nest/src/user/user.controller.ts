@@ -5,6 +5,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { LoginUserDto } from "./dto/login-user.dto";
 import { RegisterUserDto } from "./dto/register-user.dto";
 import { AuthGuard } from "src/auth/auth.guard";
+import { Public } from "src/auth/public.decorator";
 
 @ApiTags("user")
 @Controller("user")
@@ -21,6 +22,7 @@ export class UserController {
     return this.userService.myPage(userId);
   }
 
+  @Public()
   @Post("register")
   @ApiOperation({
     summary: "회원가입",
@@ -36,6 +38,6 @@ export class UserController {
     description: "추후 cognito 연결, usersService에 등록된 사용자 login",
   })
   async login(@Body() loginUserDto: LoginUserDto): Promise<User> {
-    return this.userService.login(loginUserDto);
+    return this.userService.validateUser(loginUserDto);
   }
 }
