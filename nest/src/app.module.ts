@@ -15,14 +15,17 @@ import { StarsModule } from "./stars/stars.module";
 import { ChatpostsModule } from "./chatposts/chatposts.module";
 import { FavoritecategoriesModule } from "./favoritecategories/favoritecategories.module";
 import { ConfigModule, ConfigService } from "@nestjs/config";
-import { FoldersModule } from './folders/folders.module';
-import { ChatPairsModule } from './chat-pairs/chat-pairs.module';
+import { FoldersModule } from "./folders/folders.module";
+import { ChatPairsModule } from "./chat-pairs/chat-pairs.module";
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: process.env.NODE_ENV == "dev" ? ".env.dev" : ".env.prod",
+      envFilePath:
+        process.env.NODE_ENV == "development"
+          ? ".env.development"
+          : ".env.production",
     }),
 
     TypeOrmModule.forRoot({
@@ -51,10 +54,10 @@ import { ChatPairsModule } from './chat-pairs/chat-pairs.module';
   controllers: [AppController],
   providers: [
     AppService,
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: AuthGuard,
-    // },
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
   ],
 })
 export class AppModule {}

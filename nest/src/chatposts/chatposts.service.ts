@@ -40,8 +40,9 @@ export class ChatpostsService {
     // return `This action returns all chatposts`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} chatpost`;
+  findOne(id: string) {
+    // return `This action returns a #${id} chatpost`;
+    return this.chatpostRepository.findOne({ where: { chatPostId: id } });
   }
 
   update(id: number, updateChatpostDto: UpdateChatpostDto) {

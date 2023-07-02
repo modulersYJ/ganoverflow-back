@@ -3,18 +3,19 @@ import { AppModule } from "./app.module";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { ValidationPipe } from "@nestjs/common";
 import { Logger } from "@nestjs/common";
+import * as cookieParser from "cookie-parser";
 
 import dotenv = require("dotenv");
 import path = require("path");
 dotenv.config();
 
 // 환경 별 .env 파일 동작 분기
-if (process.env.NODE_ENV === "prod") {
+if (process.env.NODE_ENV === "produnction") {
   Logger.log("서버가 프로덕션 환경에서 동작합니다.");
-  dotenv.config({ path: path.join(__dirname, "../.env.local") });
-} else if (process.env.NODE_ENV === "dev") {
+  dotenv.config({ path: path.join(__dirname, "../.env.production") });
+} else if (process.env.NODE_ENV === "development") {
   Logger.log("서버가 개발 환경에서 동작합니다.");
-  dotenv.config({ path: path.join(__dirname, "../.env.dev") });
+  dotenv.config({ path: path.join(__dirname, "../.env.development") });
 }
 
 async function bootstrap() {
@@ -28,6 +29,8 @@ async function bootstrap() {
       credentials: true,
     },
   });
+
+  app.use(cookieParser()); // 쿠키 파싱을 위한 미들웨어 추가
 
   // console.log("주입된 환경 변수: " + process.env.DB_HOST);
   // console.log("주입된 환경 변수: " + process.env.DB_PORT);

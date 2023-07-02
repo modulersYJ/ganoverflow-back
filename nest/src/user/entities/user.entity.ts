@@ -20,7 +20,13 @@ import {
 @Unique(["username"]) // 'username'는 unique해야 함
 export class User {
   @PrimaryGeneratedColumn("uuid")
-  id: number;
+  id: string;
+
+  @Column({ nullable: true })
+  refreshToken: string;
+
+  @Column({ type: "date", nullable: true })
+  refreshTokenExp: Date;
 
   @Column({ length: 150, default: "user123" })
   username: string;
@@ -89,7 +95,7 @@ export class User {
   @JoinColumn({ name: "chatpostId" })
   chatposts: Chatpost[];
 
-  @OneToMany(() => Comment, (comment) => comment.userId)
+  @OneToMany(() => Comment, (comment) => comment.user)
   @JoinColumn({ name: "commentId" })
   comments: Comment[];
 
