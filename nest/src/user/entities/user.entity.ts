@@ -89,7 +89,7 @@ export class User {
   @JoinColumn({ name: "chatpostId" })
   chatposts: Chatpost[];
 
-  @OneToMany(() => Comment, (comment) => comment.userId)
+  @OneToMany(() => Comment, (comment) => comment.user)
   @JoinColumn({ name: "commentId" })
   comments: Comment[];
 

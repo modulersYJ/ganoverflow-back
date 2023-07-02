@@ -15,8 +15,8 @@ import { StarsModule } from "./stars/stars.module";
 import { ChatpostsModule } from "./chatposts/chatposts.module";
 import { FavoritecategoriesModule } from "./favoritecategories/favoritecategories.module";
 import { ConfigModule, ConfigService } from "@nestjs/config";
-import { FoldersModule } from './folders/folders.module';
-import { ChatPairsModule } from './chat-pairs/chat-pairs.module';
+import { FoldersModule } from "./folders/folders.module";
+import { ChatPairsModule } from "./chat-pairs/chat-pairs.module";
 
 @Module({
   imports: [
