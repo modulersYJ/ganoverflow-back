@@ -7,9 +7,10 @@ import {
 import { Observable } from "rxjs";
 import { Reflector } from "@nestjs/core";
 import { JwtService } from "@nestjs/jwt";
-import { IS_PUBLIC_KEY } from "./public.decorator"; // 데코레이터를 가져옵니다.
+import { IS_PUBLIC_KEY } from "./public.decorator";
 import { jwtConstants } from "./constants";
 import { Request } from "express";
+import { hashTokenSync } from "src/UTILS/hash.util";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -40,7 +41,8 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException("로그인 하세요");
     }
     try {
-      const payload = this.jwtService.verify(token, {
+      const hashedToken = hashTokenSync(token);
+      const payload = this.jwtService.verify(hashedToken, {
         secret: jwtConstants.secret,
       });
       request.user = payload;
