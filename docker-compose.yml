@@ -1,7 +1,7 @@
 version: "1"
 services:
   nest:
-    image: choseongwoo/ganoverflow-back:v0626-1
+    image: choseongwoo/ganoverflow-back:v0705-envmod-test
     container_name: nest
     #volumes:
     #  - ./src:/app/src
@@ -12,6 +12,8 @@ services:
       - app-network
     depends_on:
       - db
+    env_file:
+      - .env.production
   nginx:
     container_name: nginx-nest
     image: nginx:1.19.0-alpine

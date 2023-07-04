@@ -4,12 +4,13 @@ import { LoginUserDto } from "src/user/dto/login-user.dto";
 import { User } from "src/user/entities/user.entity";
 import { UserService } from "src/user/user.service";
 import { jwtConstants } from "./constants";
-
+import { ConfigService } from "@nestjs/config";
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UserService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    private configService: ConfigService
   ) {}
 
   async login(loginUserDto: LoginUserDto) {
@@ -52,9 +53,10 @@ export class AuthService {
   }
 
   async setCookieWithRefreshToken(res: any, refresh_token: string) {
+    const cookieSecure = this.configService.get("COOKIE_SECURE") === "true"; // env파일 별 분기 string -> boolean 변환이요!
     res.cookie("refresh_token", refresh_token, {
-      httpOnly: process.env.COOKIE_SECURE !== "false",
-      secure: process.env.COOKIE_SECURE !== "false",
+      httpOnly: cookieSecure,
+      secure: cookieSecure,
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
 
