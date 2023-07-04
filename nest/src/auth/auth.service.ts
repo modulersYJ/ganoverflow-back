@@ -54,9 +54,13 @@ export class AuthService {
 
   async setCookieWithRefreshToken(res: any, refresh_token: string) {
     const cookieSecure = this.configService.get("COOKIE_SECURE") === "true"; // env파일 별 분기 string -> boolean 변환이요!
+    const cookieDomain = this.configService.get("COOKIE_DOMAIN");
+
     res.cookie("refresh_token", refresh_token, {
       httpOnly: cookieSecure,
       secure: cookieSecure,
+      domain: cookieDomain,
+      sameSite: "none",
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
 
