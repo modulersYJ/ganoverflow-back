@@ -9,6 +9,7 @@ import * as bcrypt from "bcrypt";
 import { User } from "src/user/entities/user.entity";
 import { LoginUserDto } from "./dto/login-user.dto";
 import { RegisterUserDto } from "./dto/register-user.dto";
+import { hashTokenSync } from "src/UTILS/hash.util";
 
 @Injectable()
 export class UserService {
@@ -79,10 +80,8 @@ export class UserService {
   }
 
   async getCurrentHashedRefreshToken(refreshToken: string) {
-    // 토큰 값을 그대로 저장하기 보단, 암호화를 거쳐 데이터베이스에 저장한다.
-    // bcrypt는 단방향 해시 함수이므로 암호화된 값으로 원래 문자열을 유추할 수 없다.
-    const saltOrRounds = 10;
-    const currentRefreshToken = await bcrypt.hash(refreshToken, saltOrRounds);
+    // hashTokenSync 함수를 이용해 token 해싱 후 저장 (비교 시 같은 함수 이용 in AuthGuard, saltOrRound는 양측 모두 default 함수 정의인자 사용)
+    const currentRefreshToken = hashTokenSync(refreshToken);
     return currentRefreshToken;
   }
 
