@@ -31,7 +31,6 @@ export class AuthController {
     description: "jwt를 돌려줍니다",
   })
   async login(@Body() loginUserDto: LoginUserDto, @Res() res: Response) {
-    console.log("????");
     const { access_token, refresh_token, nickname, id } =
       await this.authService.login(loginUserDto);
 
@@ -40,6 +39,7 @@ export class AuthController {
     return res.send({ access_token: access_token, nickname: nickname, id: id });
   }
 
+  @Public()
   @Post("logout")
   @ApiOperation({
     summary: "로그아웃",
@@ -51,7 +51,7 @@ export class AuthController {
 
     await this.authService.logout(userId);
 
-    res.clearCookie("refresh_token"); // 쿠키 삭제
+    res.clearCookie("refresh_token"); // http only 쿠키 삭제(서버가 삭제하도록 설정하는것)
 
     return res.sendStatus(200);
   }
@@ -67,6 +67,7 @@ export class AuthController {
     const refresh_token = token.token;
 
     try {
+      // refresh 검증 및 user정보 반환.
       const user = await this.authService.resolveRefreshToken(refresh_token);
       console.log("user", user);
       const newAccessToken = await this.authService.generateAccessToken(user);
