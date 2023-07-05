@@ -69,15 +69,15 @@ export class AuthService {
   }
 
   // Refresh token 확인 함수
-  async resolveRefreshToken(encoded) {
-    console.log("encoded", encoded);
-    const payload = await this.jwtService.verifyAsync(encoded.toString(), {
+  async resolveRefreshToken(refreshToken: string) {
+    console.log("refreshToken", refreshToken);
+    const payload = await this.jwtService.verifyAsync(refreshToken.toString(), {
       secret: jwtConstants.secret,
     });
 
     console.log("malformed error payload", payload);
     const tokenExists = await this.userService.getUserIfRefreshTokenMatches(
-      encoded.toString(),
+      refreshToken.toString(),
       payload.sub
     );
 
