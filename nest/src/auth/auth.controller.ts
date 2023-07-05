@@ -62,20 +62,16 @@ export class AuthController {
     summary: "Access Token 갱신",
     description: "새로운 Access Token을 반환합니다",
   })
-  async refresh(@Body() token: AuthAccessTokenRefreshDto) {
-    console.log("token", token);
-    const refresh_token = token.token;
+  async refresh(@Req() request: Request) {
+    const refresh_token = request.cookies["refresh_token"];
 
     try {
       // refresh 검증 및 user정보 반환.
       const user = await this.authService.resolveRefreshToken(refresh_token);
-      console.log("user", user);
       const newAccessToken = await this.authService.generateAccessToken(user);
-      console.log("generateAccessToken", newAccessToken);
 
       return newAccessToken;
     } catch (e: any) {
-      console.log("e: ", e);
       throw new UnauthorizedException("Access Token 발급 실패");
     }
   }
