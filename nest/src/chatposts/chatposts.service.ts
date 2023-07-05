@@ -44,6 +44,7 @@ export class ChatpostsService {
       where: { chatPostId: id },
       relations: {
         chatPair: true,
+        comments: true,
       },
     });
   }

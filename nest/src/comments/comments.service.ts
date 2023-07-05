@@ -34,7 +34,7 @@ export class CommentsService {
     const chatPost = await this.chatPostsService.findOne(chatPostId);
     return this.commentsRepository.find({
       where: {
-        chatpostId: chatPost,
+        chatPost: chatPost,
       },
     });
   }
