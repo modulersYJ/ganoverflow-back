@@ -7,16 +7,17 @@ import {
   Param,
   Delete,
   UseGuards,
+  Req,
 } from "@nestjs/common";
 import { ChatpostsService } from "./chatposts.service";
 import { CreateChatpostDto } from "./dto/create-chatpost.dto";
 import { UpdateChatpostDto } from "./dto/update-chatpost.dto";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { ChatPairsService } from "src/chat-pairs/chat-pairs.service";
 import { AuthGuard } from "src/auth/auth.guard";
 import { Public } from "src/auth/public.decorator";
 
-@Public()
+@ApiBearerAuth("jwt")
 @ApiTags("chatposts")
 @Controller("chatposts")
 export class ChatpostsController {
@@ -34,13 +35,14 @@ export class ChatpostsController {
     await this.chatpairsService.create(createChatpostDto, chatPost);
   }
 
+  @Public()
   @Get()
   findAll() {
     return this.chatpostsService.findAll();
   }
 
   @Get(":id")
-  findOne(@Param("id") id: string) {
+  findOne(@Param("id") id: string, @Req() request) {
     return this.chatpostsService.findOne(id);
   }
 

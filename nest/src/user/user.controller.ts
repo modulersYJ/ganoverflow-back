@@ -32,12 +32,12 @@ export class UserController {
     return this.userService.register(registerUserDto);
   }
 
-  @Post("login")
-  @ApiOperation({
-    summary: "사용자 login",
-    description: "추후 cognito 연결, usersService에 등록된 사용자 login",
-  })
-  async login(@Body() loginUserDto: LoginUserDto): Promise<User> {
-    return this.userService.validateUser(loginUserDto);
-  }
+  // @Post("login")
+  // @ApiOperation({
+  //   summary: "사용자 login",
+  //   description: "추후 cognito 연결, usersService에 등록된 사용자 login",
+  // })
+  // async login(@Body() loginUserDto: LoginUserDto): Promise<User> {
+  //   return this.userService.validateUser(loginUserDto);
+  // }
 }

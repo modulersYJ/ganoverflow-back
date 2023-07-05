@@ -1,11 +1,16 @@
 import { Injectable } from "@nestjs/common";
 import { CreateChatpostDto } from "./dto/create-chatpost.dto";
 import { UpdateChatpostDto } from "./dto/update-chatpost.dto";
-import { Repository } from "typeorm";
+import {
+  EntityNotFoundError,
+  EntityPropertyNotFoundError,
+  Repository,
+} from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Chatpost } from "./entities/chatpost.entity";
 import { UserService } from "src/user/user.service";
 import { CreateChatPairDto } from "src/chat-pairs/dto/create-chat-pair.dto";
+import { NotFoundError } from "rxjs";
 
 @Injectable()
 export class ChatpostsService {
@@ -40,9 +45,14 @@ export class ChatpostsService {
     // return `This action returns all chatposts`;
   }
 
-  findOne(id: string) {
+  async findOne(id: string) {
     // return `This action returns a #${id} chatpost`;
-    return this.chatpostRepository.findOne({ where: { chatPostId: id } });
+    return this.chatpostRepository.findOneOrFail({
+      where: { chatPostId: id },
+      relations: {
+        chatPair: true,
+      },
+    });
   }
 
   update(id: number, updateChatpostDto: UpdateChatpostDto) {
