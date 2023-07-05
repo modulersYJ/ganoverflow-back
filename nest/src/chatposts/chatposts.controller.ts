@@ -49,6 +49,12 @@ export class ChatpostsController {
     return this.chatpostsService.findAll();
   }
 
+  @Get("my-chats")
+  async findAllByUserId(@Req() request) {
+    const user = await this.userService.findOneById(request.user.id);
+    return this.chatpostsService.findAllByUserId(user);
+  }
+
   @Get(":id")
   findOne(@Param("id") id: string, @Req() request) {
     return this.chatpostsService.findOne(id);
