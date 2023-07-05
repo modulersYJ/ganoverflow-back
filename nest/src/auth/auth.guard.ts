@@ -41,8 +41,8 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException("로그인 하세요");
     }
     try {
-      const hashedToken = hashTokenSync(token);
-      const payload = this.jwtService.verify(hashedToken, {
+      // refresh, access 모두 포함한 후보리스트에 대해 탐색
+      const payload = this.jwtService.verify(token, {
         secret: jwtConstants.secret,
       });
       request.user = payload;
