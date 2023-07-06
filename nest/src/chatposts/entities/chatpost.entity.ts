@@ -44,6 +44,9 @@ export class Chatpost {
   @ManyToOne(() => Folder, (folder) => folder.chatposts, { nullable: true })
   folder: Folder;
 
+  @Column()
+  order: number;
+
   @OneToMany(() => ChatPair, (chatPair) => chatPair.chatPost)
   @JoinColumn({ name: "chatPairId" })
   chatPair: ChatPair[];

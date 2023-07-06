@@ -1,7 +1,9 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   NotFoundException,
+  forwardRef,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
@@ -10,12 +12,15 @@ import { User } from "src/user/entities/user.entity";
 import { LoginUserDto } from "./dto/login-user.dto";
 import { RegisterUserDto } from "./dto/register-user.dto";
 import { hashTokenSync } from "src/UTILS/hash.util";
+import { FoldersService } from "src/folders/folders.service";
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
-    private usersRepository: Repository<User>
+    private usersRepository: Repository<User>,
+    @Inject(forwardRef(() => FoldersService))
+    private foldersService: FoldersService
   ) {}
 
   myPage(userId: string) {
@@ -41,9 +46,12 @@ export class UserService {
       provider: null,
       social_id: null,
     };
+    const newUser = await this.usersRepository.save(user);
+
+    const folder = this.foldersService.createDefaultFolder(newUser);
 
     // 사용자 저장 및 반환
-    return this.usersRepository.save(user);
+    return newUser;
   }
 
   // 사용자 증명 검증
