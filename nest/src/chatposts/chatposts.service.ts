@@ -5,7 +5,7 @@ import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Chatpost } from "./entities/chatpost.entity";
 import { UserService } from "src/user/user.service";
-import { CreateChatPairDto } from "src/chat-pairs/dto/create-chat-pair.dto";
+import { User } from "src/user/entities/user.entity";
 
 @Injectable()
 export class ChatpostsService {
@@ -15,9 +15,7 @@ export class ChatpostsService {
     private usersService: UserService
   ) {}
 
-  async create(createChatpostDto: CreateChatpostDto) {
-    const user = await this.usersService.findOneByUsername("test");
-
+  async create(createChatpostDto: CreateChatpostDto, user: User) {
     const chatpost = {
       userId: user,
       createdAt: new Date(),
@@ -40,9 +38,15 @@ export class ChatpostsService {
     // return `This action returns all chatposts`;
   }
 
-  findOne(id: string) {
+  async findOne(id: string) {
     // return `This action returns a #${id} chatpost`;
-    return this.chatpostRepository.findOne({ where: { chatPostId: id } });
+    return this.chatpostRepository.findOneOrFail({
+      where: { chatPostId: id },
+      relations: {
+        chatPair: true,
+        comments: true,
+      },
+    });
   }
 
   update(id: number, updateChatpostDto: UpdateChatpostDto) {
