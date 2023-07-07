@@ -1,8 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { FoldersController } from './folders.controller';
-import { FoldersService } from './folders.service';
+import { Test, TestingModule } from "@nestjs/testing";
+import { FoldersController } from "./folders.controller";
+import { FoldersService } from "./folders.service";
 
-describe('FoldersController', () => {
+describe("FoldersController", () => {
   let controller: FoldersController;
 
   beforeEach(async () => {
@@ -14,7 +14,7 @@ describe('FoldersController', () => {
     controller = module.get<FoldersController>(FoldersController);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(controller).toBeDefined();
   });
 });

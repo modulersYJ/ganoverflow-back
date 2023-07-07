@@ -6,13 +6,15 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Chatpost } from "./entities/chatpost.entity";
 import { UserService } from "src/user/user.service";
 import { User } from "src/user/entities/user.entity";
+import { FoldersService } from "src/folders/folders.service";
 
 @Injectable()
 export class ChatpostsService {
   constructor(
     @InjectRepository(Chatpost)
     private chatpostRepository: Repository<Chatpost>,
-    private usersService: UserService
+    private usersService: UserService,
+    private foldersService: FoldersService
   ) {}
 
   async create(createChatpostDto: CreateChatpostDto, user: User) {
@@ -20,7 +22,7 @@ export class ChatpostsService {
       userId: user,
       createdAt: new Date(),
       delYn: "N",
-      folder: null,
+      folder: await this.foldersService.findZeroOrderFolder(user),
       title: createChatpostDto.title,
     };
 
