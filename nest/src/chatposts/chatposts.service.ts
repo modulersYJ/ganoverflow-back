@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { CreateChatpostDto } from "./dto/create-chatpost.dto";
 import { UpdateChatpostDto } from "./dto/update-chatpost.dto";
 import { Repository } from "typeorm";
@@ -18,12 +18,36 @@ export class ChatpostsService {
   ) {}
 
   async create(createChatpostDto: CreateChatpostDto, user: User) {
+    console.log("@@userId", user.id);
+    const zeroOrderFolder =
+      await this.foldersService.findZeroFolderWithChatposts(user);
+
+    if (!zeroOrderFolder) {
+      // zeroOrderFolder를 찾지 못한 경우 예외 처리
+      throw new NotFoundException("Zero order folder not found");
+    }
+
+    if (!zeroOrderFolder.chatposts) {
+      // zeroOrderFolder를 찾지 못한 경우 예외 처리
+      throw new NotFoundException("ZeroOrderFolder Chatposts not found");
+    }
+
+    const highestOrderPost =
+      zeroOrderFolder.chatposts.length > 0 // 무소속 폴더에 chatpost가 없을 시 0을 반환
+        ? zeroOrderFolder.chatposts.reduce(
+            (prev, current) => (current.order > prev ? current.order : prev),
+            0
+          )
+        : 0;
+    const order = highestOrderPost + 1;
+
     const chatpost = {
       userId: user,
       createdAt: new Date(),
       delYn: "N",
-      folder: await this.foldersService.findZeroOrderFolder(user),
+      folder: zeroOrderFolder,
       title: createChatpostDto.title,
+      order: order,
     };
 
     const savedPost = await this.chatpostRepository.save(chatpost);
