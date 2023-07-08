@@ -109,7 +109,7 @@ export class User {
   @JoinColumn({ name: "followeeId" })
   followeeId: Follow[];
 
-  @OneToMany(() => Folder, (folder) => folder.userId, { nullable: true })
-  @JoinColumn({ name: "folderId" })
+  @OneToMany(() => Folder, (folder) => folder.user, { nullable: true })
+  @JoinColumn({ name: "userId" }) // "userId"로 변경
   folders: Folder[];
 }

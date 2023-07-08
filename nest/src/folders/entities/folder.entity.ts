@@ -20,11 +20,14 @@ export class Folder {
   @Column()
   order: number;
 
+  @Column() // UserId column 추가
+  userId: string;
+
   @ManyToOne(() => User, (user) => user.folders)
   @JoinColumn({ name: "userId" })
-  userId: User;
+  user: User;
 
-  @OneToMany(() => Chatpost, (chatpost) => chatpost.chatPostId, {
+  @OneToMany(() => Chatpost, (chatpost) => chatpost.folder, {
     nullable: true,
   })
   chatposts: Chatpost[];
