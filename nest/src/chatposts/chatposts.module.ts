@@ -6,13 +6,14 @@ import { Chatpost } from "./entities/chatpost.entity";
 import { ChatPairsModule } from "src/chat-pairs/chat-pairs.module";
 import { UserModule } from "src/user/user.module";
 import { CommentsModule } from "src/comments/comments.module";
+import { FoldersModule } from "src/folders/folders.module";
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Chatpost]),
     ChatPairsModule,
     UserModule,
-    // CommentsModule,
+    FoldersModule,
   ],
   controllers: [ChatpostsController],
   providers: [ChatpostsService],

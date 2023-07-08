@@ -1,5 +1,6 @@
 import { Category } from "src/categories/entities/category.entity";
 import { ChatPair } from "src/chat-pairs/entities/chat-pair.entity";
+import { Comment } from "src/comments/entities/comment.entity";
 import { Folder } from "src/folders/entities/folder.entity";
 import { User } from "src/user/entities/user.entity";
 import {
@@ -41,9 +42,15 @@ export class Chatpost {
   delYn: string;
 
   @ManyToOne(() => Folder, (folder) => folder.chatposts, { nullable: true })
+  @JoinColumn({ name: "folderId" })
   folder: Folder;
 
+  @Column()
+  order: number;
+
   @OneToMany(() => ChatPair, (chatPair) => chatPair.chatPost)
-  @JoinColumn({ name: "chatPairId" })
   chatPair: ChatPair[];
+
+  @OneToMany(() => Comment, (comment) => comment.chatPost)
+  comments: Comment[];
 }

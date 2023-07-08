@@ -15,9 +15,9 @@ export class Comment {
   @PrimaryGeneratedColumn()
   commentId: number;
 
-  @ManyToOne(() => Chatpost, (chatpost) => chatpost.chatPostId)
+  @ManyToOne(() => Chatpost, (chatpost) => chatpost.comments)
   //   @JoinColumn()
-  chatpostId: Chatpost;
+  chatPost: Chatpost;
 
   @ManyToOne(() => User, (user) => user.id)
   //   @JoinColumn()

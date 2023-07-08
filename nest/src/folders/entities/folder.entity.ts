@@ -1,7 +1,9 @@
 import { Chatpost } from "src/chatposts/entities/chatpost.entity";
+import { User } from "src/user/entities/user.entity";
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -15,6 +17,18 @@ export class Folder {
   @Column()
   folderName: string;
 
-  @OneToMany(() => Chatpost, (chatpost) => chatpost.chatPostId)
+  @Column()
+  order: number;
+
+  @Column() // UserId column 추가
+  userId: string;
+
+  @ManyToOne(() => User, (user) => user.folders)
+  @JoinColumn({ name: "userId" })
+  user: User;
+
+  @OneToMany(() => Chatpost, (chatpost) => chatpost.folder, {
+    nullable: true,
+  })
   chatposts: Chatpost[];
 }
