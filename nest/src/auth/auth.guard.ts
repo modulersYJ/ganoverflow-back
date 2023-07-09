@@ -36,7 +36,7 @@ export class AuthGuard implements CanActivate {
     }
 
     const token = this.extractTokenFromHeader(request);
-    console.log("token", token);
+    console.log("authGuard Extractor - access_token: ", token);
     if (!token) {
       throw new UnauthorizedException("로그인 하세요");
     }

@@ -42,10 +42,13 @@ export class Chatpost {
   delYn: string;
 
   @ManyToOne(() => Folder, (folder) => folder.chatposts, { nullable: true })
+  @JoinColumn({ name: "folderId" })
   folder: Folder;
 
+  @Column()
+  order: number;
+
   @OneToMany(() => ChatPair, (chatPair) => chatPair.chatPost)
-  @JoinColumn({ name: "chatPairId" })
   chatPair: ChatPair[];
 
   @OneToMany(() => Comment, (comment) => comment.chatPost)
