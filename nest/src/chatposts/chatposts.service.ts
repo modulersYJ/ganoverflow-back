@@ -50,6 +50,7 @@ export class ChatpostsService {
       relations: {
         chatPair: true,
         comments: true,
+        userId: true,
       },
     });
   }

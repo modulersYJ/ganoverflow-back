@@ -60,6 +60,12 @@ export class ChatpostsController {
     return this.chatpostsService.findOne(id);
   }
 
+  @Public()
+  @Get("public/:id")
+  publicFindOne(@Param("id") id: string) {
+    return this.chatpostsService.findOne(id);
+  }
+
   @Patch(":id")
   update(
     @Param("id") id: string,

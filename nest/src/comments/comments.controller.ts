@@ -41,10 +41,10 @@ export class CommentsController {
     return this.commentsService.create(chatPost, user, createCommentDto);
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.commentsService.findCommentsByChatPostId("1");
-  // }
+  @Get("/all/:id")
+  findAll(@Param("id") id: string) {
+    return this.commentsService.findCommentsByChatPostId(id);
+  }
 
   @Get(":id")
   findOne(@Param("id") id: string) {
