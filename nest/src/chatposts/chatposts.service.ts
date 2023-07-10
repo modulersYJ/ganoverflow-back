@@ -58,10 +58,15 @@ export class ChatpostsService {
     const posts = await this.chatpostRepository.find({
       relations: {
         chatPair: true,
+        userId: true,
       },
     });
     return posts;
     // return `This action returns all chatposts`;
+  }
+
+  async findAllByUserId(user: User) {
+    return this.chatpostRepository.find({ where: { userId: user } });
   }
 
   async findOne(id: string) {
@@ -71,6 +76,7 @@ export class ChatpostsService {
       relations: {
         chatPair: true,
         comments: true,
+        userId: true,
       },
     });
   }

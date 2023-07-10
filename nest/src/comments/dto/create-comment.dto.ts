@@ -1,12 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { IsOptional } from "class-validator";
 
 export class CreateCommentDto {
   @ApiProperty()
-  userName: string;
-
-  @ApiProperty()
-  chatPostId: number;
-
-  @ApiProperty()
+  @IsOptional()
   content: string;
 }
