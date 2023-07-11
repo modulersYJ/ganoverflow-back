@@ -48,6 +48,9 @@ export class Chatpost {
   @Column()
   order: number;
 
+  @Column()
+  viewCount: number;
+
   @OneToMany(() => ChatPair, (chatPair) => chatPair.chatPost)
   chatPair: ChatPair[];
 

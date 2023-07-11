@@ -58,21 +58,37 @@ export class ChatpostsService {
     const posts = await this.chatpostRepository.find({
       relations: {
         chatPair: true,
+        userId: true,
+        comments: true,
+      },
+      order: {
+        createdAt: "DESC",
       },
     });
     return posts;
     // return `This action returns all chatposts`;
   }
 
+  async findAllByUserId(user: User) {
+    return this.chatpostRepository.find({ where: { userId: user } });
+  }
+
   async findOne(id: string) {
     // return `This action returns a #${id} chatpost`;
-    return this.chatpostRepository.findOneOrFail({
+    const post = await this.chatpostRepository.findOneOrFail({
       where: { chatPostId: id },
       relations: {
         chatPair: true,
-        comments: true,
+        comments: { user: true },
+        userId: true,
       },
     });
+
+    if (post) {
+      post.viewCount += 1; // viewCount 증가
+      await this.chatpostRepository.save(post);
+    }
+    return post;
   }
 
   update(id: number, updateChatpostDto: UpdateChatpostDto) {

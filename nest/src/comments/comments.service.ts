@@ -18,7 +18,7 @@ export class CommentsService {
 
   create(chatPost: Chatpost, user: User, createCommentDto: CreateCommentDto) {
     const commentToSave = {
-      chatPostId: chatPost,
+      chatPost: chatPost,
       ...createCommentDto,
       createdAt: new Date(),
       delYn: "N",

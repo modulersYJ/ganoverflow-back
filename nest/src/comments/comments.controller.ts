@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Req,
 } from "@nestjs/common";
 import { CommentsService } from "./comments.service";
 import { CreateCommentDto } from "./dto/create-comment.dto";
@@ -30,21 +31,21 @@ export class CommentsController {
   })
   @Post("/:chatPostId")
   async create(
-    @Param()
+    @Param("chatPostId")
     chatPostId: string,
-    @Body() createCommentDto: CreateCommentDto
+    @Body() createCommentDto: CreateCommentDto,
+    @Req() req
   ) {
+    // console.log("commentController - create - chatPostId", chatPostId);
     const chatPost = await this.chatPostsService.findOne(chatPostId);
-    const user = await this.userService.findOneByUsername(
-      createCommentDto.userName
-    );
+    const user = await this.userService.findOneByUsername(req.user.userName);
     return this.commentsService.create(chatPost, user, createCommentDto);
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.commentsService.findCommentsByChatPostId("1");
-  // }
+  @Get("/all/:id")
+  findAll(@Param("id") id: string) {
+    return this.commentsService.findCommentsByChatPostId(id);
+  }
 
   @Get(":id")
   findOne(@Param("id") id: string) {
