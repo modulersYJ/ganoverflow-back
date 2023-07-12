@@ -24,6 +24,7 @@ export class ChatbotService {
       top_p: 1,
       frequency_penalty: 0.5,
       presence_penalty: 0,
+      // stream: true,
     });
 
     return response.data.choices[0].text;

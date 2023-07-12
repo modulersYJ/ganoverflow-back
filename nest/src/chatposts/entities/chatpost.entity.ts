@@ -1,3 +1,4 @@
+import { IsOptional } from "class-validator";
 import { Category } from "src/categories/entities/category.entity";
 import { ChatPair } from "src/chat-pairs/entities/chat-pair.entity";
 import { Comment } from "src/comments/entities/comment.entity";
@@ -48,7 +49,8 @@ export class Chatpost {
   @Column()
   order: number;
 
-  @Column()
+  @Column({ default: 0 })
+  @IsOptional()
   viewCount: number;
 
   @OneToMany(() => ChatPair, (chatPair) => chatPair.chatPost)
