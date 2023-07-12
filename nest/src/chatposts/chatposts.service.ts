@@ -60,6 +60,7 @@ export class ChatpostsService {
         chatPair: true,
         userId: true,
         comments: true,
+        stars: true,
       },
       order: {
         createdAt: "DESC",
@@ -81,6 +82,7 @@ export class ChatpostsService {
         chatPair: true,
         comments: { user: true },
         userId: true,
+        stars: true,
       },
     });
 

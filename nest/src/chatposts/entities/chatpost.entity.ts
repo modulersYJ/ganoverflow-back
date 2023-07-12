@@ -3,6 +3,7 @@ import { Category } from "src/categories/entities/category.entity";
 import { ChatPair } from "src/chat-pairs/entities/chat-pair.entity";
 import { Comment } from "src/comments/entities/comment.entity";
 import { Folder } from "src/folders/entities/folder.entity";
+import { Star } from "src/stars/entities/star.entity";
 import { User } from "src/user/entities/user.entity";
 import {
   Column,
@@ -58,4 +59,7 @@ export class Chatpost {
 
   @OneToMany(() => Comment, (comment) => comment.chatPost)
   comments: Comment[];
+
+  @OneToMany(() => Star, (star) => star.chatPostId)
+  stars: Star[];
 }

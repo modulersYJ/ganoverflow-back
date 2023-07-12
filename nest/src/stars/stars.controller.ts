@@ -6,20 +6,34 @@ import {
   Patch,
   Param,
   Delete,
+  Req,
 } from "@nestjs/common";
 import { StarsService } from "./stars.service";
 import { CreateStarDto } from "./dto/create-star.dto";
 import { UpdateStarDto } from "./dto/update-star.dto";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { UserService } from "src/user/user.service";
+import { ChatpostsService } from "src/chatposts/chatposts.service";
 
 @ApiTags("stars")
+@ApiBearerAuth("jwt")
 @Controller("stars")
 export class StarsController {
-  constructor(private readonly starsService: StarsService) {}
+  constructor(
+    private readonly starsService: StarsService,
+    private readonly userService: UserService,
+    private readonly chatpostsService: ChatpostsService
+  ) {}
 
   @Post()
-  create(@Body() createStarDto: CreateStarDto) {
-    return this.starsService.create(createStarDto);
+  async create(@Body() createStarDto: CreateStarDto, @Req() req) {
+    const user = await this.userService.findOneByUsername(req.user.username);
+
+    const chatPost = await this.chatpostsService.findOne(
+      createStarDto.chatPostId
+    );
+
+    return this.starsService.likeOrUpdate(createStarDto, chatPost, user);
   }
 
   @Get()
