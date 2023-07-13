@@ -58,15 +58,25 @@ export class StarsService {
       insertOrUpdate = "updated";
     }
 
-    return `${insertOrUpdate} completed`;
+    return this.findStarsByChatpostId(createStarDto.chatPostId);
   }
 
   findAll() {
     return `This action returns all stars`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} star`;
+  async findStarsByChatpostId(chatPostId: string) {
+    const stars = await this.starRepository
+      .createQueryBuilder("stars")
+      .leftJoinAndSelect("stars.user", "user")
+      .where("chatpostid = :chatpostid", {
+        chatpostid: chatPostId,
+      })
+      .getMany();
+
+    const count = stars.reduce((acc, curr) => acc + curr.value, 0);
+
+    return { stars: stars, count: count };
   }
 
   update(id: number, updateStarDto: UpdateStarDto) {
