@@ -76,10 +76,11 @@ export class StarsService {
 
   async findOneByChatPostId(chatPostId: string) {
     const star = await this.starRepository
-      .createQueryBuilder()
+      .createQueryBuilder("stars")
       .where("chatpostid = :chatpostid", {
         chatpostid: chatPostId,
       })
+      .leftJoinAndSelect("stars.user", "user")
       .getMany();
 
     return {

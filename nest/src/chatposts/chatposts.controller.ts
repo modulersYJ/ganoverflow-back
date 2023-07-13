@@ -57,13 +57,13 @@ export class ChatpostsController {
 
   @Get(":id")
   findOne(@Param("id") id: string, @Req() request) {
-    return this.chatpostsService.findOne(id);
+    return this.chatpostsService.findOneWithCount(id);
   }
 
   @Public()
   @Get("public/:id")
   publicFindOne(@Param("id") id: string) {
-    return this.chatpostsService.findOne(id);
+    return this.chatpostsService.findOneWithCount(id);
   }
 
   @Patch(":id")
