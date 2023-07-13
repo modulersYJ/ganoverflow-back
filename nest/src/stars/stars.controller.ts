@@ -14,6 +14,7 @@ import { UpdateStarDto } from "./dto/update-star.dto";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { UserService } from "src/user/user.service";
 import { ChatpostsService } from "src/chatposts/chatposts.service";
+import { Public } from "src/auth/public.decorator";
 
 @ApiTags("stars")
 @ApiBearerAuth("jwt")
@@ -41,9 +42,10 @@ export class StarsController {
     return this.starsService.findAll();
   }
 
-  @Get(":id")
-  findOne(@Param("id") id: string) {
-    return this.starsService.findOne(+id);
+  @Public()
+  @Get(":chatPostId")
+  findOne(@Param("chatPostId") id: string) {
+    return this.starsService.findOneByChatPostId(id);
   }
 
   @Patch(":id")
