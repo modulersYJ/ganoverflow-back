@@ -82,7 +82,7 @@ export class ChatpostsService {
         chatPair: true,
         comments: { user: true },
         userId: true,
-        stars: { user: true },
+        stars: true,
       },
     });
 
