@@ -45,7 +45,7 @@ export class StarsService {
     if (!star) {
       await this.starRepository.save({
         user: user,
-        chatPostId: createStarDto,
+        chatPostId: chatpost,
         value: createStarDto.like,
       });
     } else {
