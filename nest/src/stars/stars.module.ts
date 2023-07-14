@@ -6,6 +6,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { Star } from "./entities/star.entity";
 import { ChatpostsModule } from "src/chatposts/chatposts.module";
 
+
 @Module({
   imports: [TypeOrmModule.forFeature([Star]), UserModule, ChatpostsModule],
   controllers: [StarsController],
