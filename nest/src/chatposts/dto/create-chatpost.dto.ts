@@ -10,4 +10,8 @@ export class CreateChatpostDto {
   @ApiProperty({ type: [CreateChatPairDto] })
   @IsOptional()
   chatPair: CreateChatPairDto[];
+
+  @ApiProperty()
+  @IsOptional()
+  categoryName: string;
 }

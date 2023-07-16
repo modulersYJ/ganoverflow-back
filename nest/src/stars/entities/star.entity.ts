@@ -9,13 +9,6 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 
-
-// export enum StarValue {
-//   MinusOne = -1,
-//   Zero = 0,
-//   One = 1,
-// }
-
 @Entity()
 export class Star {
   @PrimaryGeneratedColumn()

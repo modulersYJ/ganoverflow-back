@@ -7,6 +7,7 @@ import { Chatpost } from "./entities/chatpost.entity";
 import { UserService } from "src/user/user.service";
 import { User } from "src/user/entities/user.entity";
 import { FoldersService } from "src/folders/folders.service";
+import { Category } from "src/categories/entities/category.entity";
 
 @Injectable()
 export class ChatpostsService {
@@ -17,7 +18,11 @@ export class ChatpostsService {
     private foldersService: FoldersService
   ) {}
 
-  async create(createChatpostDto: CreateChatpostDto, user: User) {
+  async create(
+    createChatpostDto: CreateChatpostDto,
+    user: User,
+    categoryName?: Category
+  ) {
     console.log("@@userId", user.id);
     const zeroOrderFolder =
       await this.foldersService.findZeroFolderWithChatposts(user);
@@ -48,6 +53,7 @@ export class ChatpostsService {
       folder: zeroOrderFolder,
       title: createChatpostDto.title,
       order: order,
+      categoryName: categoryName,
     };
 
     const savedPost = await this.chatpostRepository.save(chatpost);

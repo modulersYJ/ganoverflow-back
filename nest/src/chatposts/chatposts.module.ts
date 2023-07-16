@@ -7,6 +7,7 @@ import { ChatPairsModule } from "src/chat-pairs/chat-pairs.module";
 import { UserModule } from "src/user/user.module";
 import { CommentsModule } from "src/comments/comments.module";
 import { FoldersModule } from "src/folders/folders.module";
+import { CategoriesModule } from "src/categories/categories.module";
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { FoldersModule } from "src/folders/folders.module";
     ChatPairsModule,
     UserModule,
     FoldersModule,
+    CategoriesModule,
   ],
   controllers: [ChatpostsController],
   providers: [ChatpostsService],
