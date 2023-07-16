@@ -22,7 +22,7 @@ export class Chatpost {
   chatPostId: string;
 
   @Column()
-  title: string;
+  chatpostName: string;
 
   @ManyToOne(() => User, (user) => user.chatposts)
   @JoinColumn({ name: "userId" })

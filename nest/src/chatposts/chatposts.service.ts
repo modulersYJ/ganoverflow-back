@@ -46,7 +46,7 @@ export class ChatpostsService {
       createdAt: new Date(),
       delYn: "N",
       folder: zeroOrderFolder,
-      title: createChatpostDto.title,
+      chatpostName: createChatpostDto.chatpostName,
       order: order,
     };
 
