@@ -4,7 +4,6 @@ import { UpdateChatpostDto } from "./dto/update-chatpost.dto";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Chatpost } from "./entities/chatpost.entity";
-import { UserService } from "src/user/user.service";
 import { User } from "src/user/entities/user.entity";
 import { FoldersService } from "src/folders/folders.service";
 import { Category } from "src/categories/entities/category.entity";
@@ -13,9 +12,7 @@ import { Category } from "src/categories/entities/category.entity";
 export class ChatpostsService {
   constructor(
     @InjectRepository(Chatpost)
-    private chatpostRepository: Repository<Chatpost>,
-    private usersService: UserService,
-    private foldersService: FoldersService
+    private chatpostRepository: Repository<Chatpost>
   ) {}
 
   async create(
@@ -24,34 +21,13 @@ export class ChatpostsService {
     categoryName?: Category
   ) {
     console.log("@@userId", user.id);
-    const zeroOrderFolder =
-      await this.foldersService.findZeroFolderWithChatposts(user);
-
-    if (!zeroOrderFolder) {
-      // zeroOrderFolder를 찾지 못한 경우 예외 처리
-      throw new NotFoundException("Zero order folder not found");
-    }
-
-    if (!zeroOrderFolder.chatposts) {
-      // zeroOrderFolder를 찾지 못한 경우 예외 처리
-      throw new NotFoundException("ZeroOrderFolder Chatposts not found");
-    }
-
-    const highestOrderPost =
-      zeroOrderFolder.chatposts.length > 0 // 무소속 폴더에 chatpost가 없을 시 0을 반환
-        ? zeroOrderFolder.chatposts.reduce(
-            (prev, current) => (current.order > prev ? current.order : prev),
-            0
-          )
-        : 0;
-    const order = highestOrderPost + 1;
 
     const chatpost = {
       userId: user,
       createdAt: new Date(),
       delYn: "N",
       folder: zeroOrderFolder,
-      title: createChatpostDto.title,
+      chatpostName: createChatpostDto.chatpostName,
       order: order,
       categoryName: categoryName,
     };

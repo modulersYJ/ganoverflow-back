@@ -12,15 +12,14 @@ import { User } from "src/user/entities/user.entity";
 import { LoginUserDto } from "./dto/login-user.dto";
 import { RegisterUserDto } from "./dto/register-user.dto";
 import { hashTokenSync } from "src/UTILS/hash.util";
-import { FoldersService } from "src/folders/folders.service";
-
+// import { FoldersService } from "src/folders/folders.service";
+import { ChatpostsService } from "src/chatposts/chatposts.service";
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-    @Inject(forwardRef(() => FoldersService))
-    private foldersService: FoldersService
+    private readonly chatPostsService: ChatpostsService
   ) {}
 
   myPage(userId: string) {
@@ -45,10 +44,16 @@ export class UserService {
       // status: "N",
       provider: null,
       social_id: null,
+      // 기본 폴더 생성
+      folders: JSON.stringify([
+        {
+          folderId: 0,
+          folderName: "default folder",
+          chatpostIds: [],
+        },
+      ]),
     };
     const newUser = await this.usersRepository.save(user);
-
-    const folder = this.foldersService.createDefaultFolder(newUser);
 
     // 사용자 저장 및 반환
     return newUser;
@@ -131,5 +136,37 @@ export class UserService {
     if (isMatch) {
       return current;
     }
+  }
+
+  //============Folders 관련===========
+  // 사용자 폴더 목록 & 매치되는 chatpost기본정보 포함 반환
+  async getFoldersWithPosts(user: User) {
+    const folders = JSON.parse(user.folders);
+
+    for (const folder of folders) {
+      folder.chatposts = [];
+      for (const postId of folder.chatpostIds) {
+        // chatpostIds 각각 id에 해당하는 chatpost를 찾아 chatposts 배열에 추가
+        const { chatPostId, chatpostName } =
+          await this.chatPostsService.findOne(postId);
+        folder.chatposts.push({ chatPostId, chatpostName });
+      }
+      // 각 폴더에서 chatpostIds를 삭제
+      delete folder.chatpostIds;
+    }
+    // 재구조화된 folders 반환
+    return folders;
+  }
+
+  async overwriteFoldersWithPosts(user: User, folders: any[]): Promise<User> {
+    user.folders = JSON.stringify(
+      folders.map((folder) => ({
+        ...folder,
+        // chatpostIds만 추출하여 배열화 저장
+        chatpostIds: folder.chatposts.map((chatpost) => chatpost.chatPostId),
+      }))
+    );
+
+    return this.usersRepository.save(user);
   }
 }
