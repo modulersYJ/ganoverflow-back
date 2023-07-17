@@ -5,6 +5,8 @@ import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Chatpost } from "./entities/chatpost.entity";
 import { User } from "src/user/entities/user.entity";
+import { FoldersService } from "src/folders/folders.service";
+import { Category } from "src/categories/entities/category.entity";
 
 @Injectable()
 export class ChatpostsService {
@@ -13,14 +15,21 @@ export class ChatpostsService {
     private chatpostRepository: Repository<Chatpost>
   ) {}
 
-  async create(createChatpostDto: CreateChatpostDto, user: User) {
+  async create(
+    createChatpostDto: CreateChatpostDto,
+    user: User,
+    categoryName?: Category
+  ) {
     console.log("@@userId", user.id);
 
     const chatpost = {
       userId: user,
       createdAt: new Date(),
       delYn: "N",
+      folder: zeroOrderFolder,
       chatpostName: createChatpostDto.chatpostName,
+      order: order,
+      categoryName: categoryName,
     };
 
     const savedPost = await this.chatpostRepository.save(chatpost);
