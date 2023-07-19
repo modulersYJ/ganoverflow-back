@@ -13,11 +13,7 @@ import { hashTokenSync } from "src/UTILS/hash.util";
 // import { FoldersService } from "src/folders/folders.service";
 import { ChatpostsService } from "src/chatposts/chatposts.service";
 import { Chatpost } from "src/chatposts/entities/chatpost.entity";
-import {
-  IChatpostBasicInfo,
-  IFolder,
-  IFolderForClient,
-} from "./entities/IFolders";
+import { IChatpostBasicInfo, IFolder } from "./entities/IFolders";
 @Injectable()
 export class UserService {
   constructor(
@@ -145,70 +141,48 @@ export class UserService {
   //============Folders 관련===========
   // 사용자 폴더 목록 & 매치되는 chatpost기본정보 포함 반환
   async getFoldersWithPosts(user: User) {
-    const resFolders = JSON.parse(user.folders);
-
-    for (const folder of resFolders) {
-      folder.chatposts = [] as IChatpostBasicInfo[]; // chatposts 폴더 초기화
-      for (const postId of folder.chatpostIds) {
-        // chatpostIds 각각 id에 해당하는 chatpost를 찾아 chatposts 배열에 추가
-        const { chatPostId, chatpostName } =
-          await this.chatPostsService.findOne(postId);
-
-        folder.chatposts.push({
-          chatPostId,
-          chatpostName,
-        } as IChatpostBasicInfo);
-      }
-
-      // 각 폴더에서 chatpostIds를 삭제
-      delete folder.chatpostIds;
-    }
+    const resFolders: IFolder[] = JSON.parse(user.folders);
 
     // 재구조화된 resFolders 반환
-    return resFolders as IFolderForClient[];
+    return resFolders as IFolder[];
   }
 
   // cli에서 드래그앤드롭에 의해 업데이트 & 폴더추가 경우 overwrite하는 용도 (순서, 소속)
   async overwriteFoldersWithPosts(
     user: User,
-    folders: IFolderForClient[]
-  ): Promise<IFolderForClient[]> {
-    const newFolders = JSON.stringify(
-      folders.map(
-        (folder) =>
-          ({
-            folderId: folder.folderId,
-            folderName: folder.folderName,
-            chatpostIds: folder.chatposts.map(
-              (chatpost: Chatpost) => chatpost.chatPostId
-            ),
-          } as IFolder)
-      )
-    );
+    folders: IFolder[]
+  ): Promise<IFolder[]> {
+    const newFolders = JSON.stringify(folders);
     user.folders = newFolders;
     await this.usersRepository.save(user);
-    const restructedFolders = await this.getFoldersWithPosts(user);
 
-    return restructedFolders as IFolderForClient[];
+    return folders as IFolder[];
   }
 
   // chatpost 서비스에서 chapost 추가 시...
   async pushChatpostIdToFolder(user: User, chatpost: Chatpost) {
-    const folders = JSON.parse(user.folders);
-    folders[0].chatpostIds.unshift(chatpost.chatPostId);
-    const newFolders = JSON.stringify(folders);
+    const folders: IFolder[] = JSON.parse(user.folders);
+    folders[0].chatposts.unshift({
+      chatPostId: chatpost.chatPostId,
+      chatpostName: chatpost.chatpostName,
+    } as IChatpostBasicInfo);
 
+    const newFolders = JSON.stringify(folders);
     user.folders = newFolders;
     await this.usersRepository.save(user);
   }
+
   // chatpost 서비스에서 chatpost 제거 시...
-  async removeChatpostIdFromFolder(user: User, chatpost: Chatpost) {
+  async removeChatpostIdFromFolder(
+    user: User,
+    chatpost: Chatpost
+  ): Promise<IFolder[]> {
     const targetId = chatpost.chatPostId;
 
     const newFolders = JSON.stringify(
       JSON.parse(user.folders).map((folder: IFolder) => {
-        folder.chatpostIds = folder.chatpostIds.filter((chatPostId) => {
-          return chatPostId !== targetId;
+        folder.chatposts = folder.chatposts.filter((chatpost) => {
+          return chatpost.chatPostId !== targetId;
         });
         return folder;
       })
@@ -216,39 +190,35 @@ export class UserService {
 
     user.folders = newFolders;
     await this.usersRepository.save(user);
-
-    // 삭제 후, CLI-SERVER 정합성 유지를 위한 반환
-    const restructedFolders = await this.restructFoldersForClient(newFolders);
-
-    return restructedFolders;
-  }
-
-  // push, remove, overwrite의 처리결과를 client와의 정합성 유지를 위해 restruct 및 반환시켜주는 역할
-  async restructFoldersForClient(folders: string) {
-    const parsedFolders = JSON.parse(folders); // IFolder[] => IFolderClient[] 구조변형
-
-    // map은 비동기 함수를 관리하지 못하므로 Promise.all을 사용해 비동기 함수 관리함!
-    const restructedFolders = await Promise.all(
-      parsedFolders.map(async (folder: any) => {
-        folder.chatposts = [] as IChatpostBasicInfo[];
-
-        folder.chatposts = await Promise.all(
-          folder.chatpostIds.map(async (chatPostId: string) => {
-            const { chatpostName } = await this.chatPostsService.findOne(
-              chatPostId
-            );
-
-            return {
-              chatPostId: chatPostId,
-              chatpostName,
-            } as IChatpostBasicInfo;
-          })
-        );
-        delete folder.chatpostIds;
-        return folder;
-      })
-    );
-
-    return restructedFolders as IFolderForClient[];
+    return JSON.parse(newFolders) as IFolder[];
   }
 }
+//   // push, remove, overwrite의 처리결과를 client와의 정합성 유지를 위해 restruct 및 반환시켜주는 역할
+//   async restructFoldersForClient(folders: string) {
+//     const parsedFolders = JSON.parse(folders); // IFolder[] => IFolderClient[] 구조변형
+
+//     // map은 비동기 함수를 관리하지 못하므로 Promise.all을 사용해 비동기 함수 관리함!
+//     const restructedFolders = await Promise.all(
+//       parsedFolders.map(async (folder: any) => {
+//         folder.chatposts = [] as IChatpostBasicInfo[];
+
+//         folder.chatposts = await Promise.all(
+//           folder.chatpostIds.map(async (chatPostId: string) => {
+//             const { chatpostName } = await this.chatPostsService.findOne(
+//               chatPostId
+//             );
+
+//             return {
+//               chatPostId: chatPostId,
+//               chatpostName,
+//             } as IChatpostBasicInfo;
+//           })
+//         );
+//         delete folder.chatpostIds;
+//         return folder;
+//       })
+//     );
+
+//     return restructedFolders as IFolder[];
+//   }
+// }
