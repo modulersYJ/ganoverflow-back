@@ -5,14 +5,8 @@ export interface IChatpostBasicInfo {
   chatpostName: Chatpost["chatpostName"];
 }
 
-export interface IFolderForClient {
-  folderId: number;
-  folderName: string;
-  chatposts: IChatpostBasicInfo[];
-}
-
 export interface IFolder {
   folderId: number;
   folderName: string;
-  chatpostIds: Chatpost["chatPostId"][];
+  chatposts: IChatpostBasicInfo[];
 }
