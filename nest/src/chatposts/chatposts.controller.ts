@@ -12,12 +12,15 @@ import {
 import { ChatpostsService } from "./chatposts.service";
 import { CreateChatpostDto } from "./dto/create-chatpost.dto";
 import { UpdateChatpostDto } from "./dto/update-chatpost.dto";
-import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { ChatPairsService } from "src/chat-pairs/chat-pairs.service";
 import { AuthGuard } from "src/auth/auth.guard";
 import { Public } from "src/auth/public.decorator";
 import { UserService } from "src/user/user.service";
 import { CategoriesService } from "src/categories/categories.service";
+import { RemoveEvent } from "typeorm";
+import { RemoveChatpostDto } from "./dto/remove-chatpost.dto";
+import { Chatpost } from "./entities/chatpost.entity";
 
 @ApiBearerAuth("jwt")
 @ApiTags("chatposts")
@@ -31,6 +34,10 @@ export class ChatpostsController {
   ) {}
 
   @Post()
+  @ApiOperation({
+    summary: "chatpost 추가",
+    description: "chatpost 추가 및 유저.folders 업데이트",
+  })
   async create(@Body() createChatpostDto: CreateChatpostDto, @Req() req) {
     const user = await this.userService.findOneByUsername(req.user.username);
 
@@ -50,6 +57,14 @@ export class ChatpostsController {
 
     // const chatPostId = chatPost.chatPostId;
     await this.chatpairsService.create(createChatpostDto, chatPost);
+
+    // ^ chatPosts 추가 시, 해당 user의 folders에 chatPostId push
+    const updatedFolders = await this.userService.pushChatpostIdToFolder(
+      user,
+      chatPost
+    );
+
+    return updatedFolders; // foldersWithChatposts 정합성 위해 반환
   }
 
   @Public()
@@ -80,11 +95,27 @@ export class ChatpostsController {
     @Param("id") id: string,
     @Body() updateChatpostDto: UpdateChatpostDto
   ) {
-    return this.chatpostsService.update(+id, updateChatpostDto);
+    return this.chatpostsService.update(id, updateChatpostDto);
   }
 
   @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.chatpostsService.remove(+id);
+  @ApiOperation({
+    summary: "chatpost 제거",
+    description: "chatpost 제거 및 유저.folders 업데이트",
+  })
+  async remove(
+    @Param("id") id: string,
+    @Body() removeChatpostDto: RemoveChatpostDto
+  ) {
+    await this.chatpostsService.remove(id);
+
+    const user = await this.userService.findOneById(removeChatpostDto.userId);
+    const chatpost = await this.chatpostsService.findOne(id);
+    const updatedFolders = await this.userService.removeChatpostIdFromFolder(
+      user,
+      chatpost
+    );
+
+    return updatedFolders;
   }
 }
