@@ -49,7 +49,7 @@ export class UserService {
         {
           folderId: 0,
           folderName: "default folder",
-          chatpostIds: [],
+          chatposts: [],
         },
       ]),
     };
