@@ -5,7 +5,6 @@ import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Chatpost } from "./entities/chatpost.entity";
 import { User } from "src/user/entities/user.entity";
-import { FoldersService } from "src/folders/folders.service";
 import { Category } from "src/categories/entities/category.entity";
 
 @Injectable()
@@ -26,9 +25,7 @@ export class ChatpostsService {
       userId: user,
       createdAt: new Date(),
       delYn: "N",
-      folder: zeroOrderFolder,
       chatpostName: createChatpostDto.chatpostName,
-      order: order,
       categoryName: categoryName,
     };
 
@@ -94,11 +91,12 @@ export class ChatpostsService {
     return post;
   }
 
-  update(id: number, updateChatpostDto: UpdateChatpostDto) {
+  update(id: string, updateChatpostDto: UpdateChatpostDto) {
     return `This action updates a #${id} chatpost`;
   }
 
-  remove(id: number) {
+  async remove(id: Chatpost["chatPostId"]) {
+    this.chatpostRepository.delete(id);
     return `This action removes a #${id} chatpost`;
   }
 }

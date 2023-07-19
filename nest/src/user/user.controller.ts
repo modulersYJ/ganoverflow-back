@@ -55,7 +55,8 @@ export class UserController {
   @Put("folders/:userId")
   @ApiOperation({
     summary: "사용자의 폴더 & 종속 포스트 정보 갱신",
-    description: "사용자의 폴더 & 종속 포스트 정보를 갱신",
+    description:
+      "사용자의 폴더 & 종속 포스트 정보를 갱신 ( post 소속변경 or 폴더 추가, 제거 시 )",
   })
   async overwriteFoldersWithPosts(
     @Param("userId") userId: string,
