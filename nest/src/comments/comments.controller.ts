@@ -36,9 +36,8 @@ export class CommentsController {
     @Body() createCommentDto: CreateCommentDto,
     @Req() req
   ) {
-    // console.log("commentController - create - chatPostId", chatPostId);
     const chatPost = await this.chatPostsService.findOne(chatPostId);
-    const user = await this.userService.findOneByUsername(req.user.userName);
+    const user = await this.userService.findOneById(req.user.sub);
     return this.commentsService.create(chatPost, user, createCommentDto);
   }
 
