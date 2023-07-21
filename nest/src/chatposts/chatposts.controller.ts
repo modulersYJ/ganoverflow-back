@@ -136,8 +136,12 @@ export class ChatpostsController {
   }
 
   @Get(":id")
-  findOne(@Param("id") id: string, @Req() request) {
-    return this.chatpostsService.findOneWithCount(id);
+  @ApiOperation({
+    summary: "chatpost 가져오기 by ID",
+    description: "chatpost 가져오기 by ID (for chat페이지)",
+  })
+  findOne(@Param("id") id: string) {
+    return this.chatpostsService.findOne(id);
   }
 
   @Public()
