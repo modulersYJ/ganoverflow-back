@@ -6,21 +6,22 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards,
   Req,
+  NotFoundException,
 } from "@nestjs/common";
 import { ChatpostsService } from "./chatposts.service";
 import { CreateChatpostDto } from "./dto/create-chatpost.dto";
-import { UpdateChatpostDto } from "./dto/update-chatpost.dto";
+
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { ChatPairsService } from "src/chat-pairs/chat-pairs.service";
-import { AuthGuard } from "src/auth/auth.guard";
+
 import { Public } from "src/auth/public.decorator";
 import { UserService } from "src/user/user.service";
 import { CategoriesService } from "src/categories/categories.service";
-import { RemoveEvent } from "typeorm";
+
 import { RemoveChatpostDto } from "./dto/remove-chatpost.dto";
-import { Chatpost } from "./entities/chatpost.entity";
+
+import { UpdateChatpostNameDto } from "./dto/update-chatpost-name.dto";
 
 @ApiBearerAuth("jwt")
 @ApiTags("chatposts")
@@ -67,6 +68,61 @@ export class ChatpostsController {
     return updatedFolders; // foldersWithChatposts 정합성 위해 반환
   }
 
+  @Patch(":id")
+  @ApiOperation({
+    summary: "chatpost name 업데이트",
+    description: "chatpost name 업데이트",
+  })
+  async updateName(
+    @Param("id") id: string,
+    @Body() updateChatpostNameDto: UpdateChatpostNameDto
+  ) {
+    const targetPost = await this.chatpostsService.findOne(id);
+
+    if (!targetPost) {
+      throw new NotFoundException("Post not found.");
+    }
+    // chatpost name 업데이트
+    const newPostName = await this.chatpostsService.updateName(
+      targetPost,
+      updateChatpostNameDto
+    );
+
+    const user = await this.userService.findOneById(
+      updateChatpostNameDto.userId
+    );
+    // user folders 업데이트
+    const newFolders = this.userService.updateChatpostNameWithFolders(
+      user,
+      targetPost,
+      updateChatpostNameDto.folderId,
+      newPostName
+    );
+    // sidebar 정합성을 위한 folders 반환
+    return newFolders;
+  }
+
+  @Delete(":id")
+  @ApiOperation({
+    summary: "chatpost 제거",
+    description: "chatpost 제거 및 유저.folders 업데이트",
+  })
+  async remove(
+    @Param("id") id: string,
+    @Body() removeChatpostDto: RemoveChatpostDto
+  ) {
+    await this.chatpostsService.remove(id);
+
+    const user = await this.userService.findOneById(removeChatpostDto.userId);
+    const chatpost = await this.chatpostsService.findOne(id);
+    const updatedFolders = await this.userService.removeChatpostIdFromFolder(
+      user,
+      chatpost
+    );
+
+    return updatedFolders;
+  }
+
   @Public()
   @Get()
   findAll() {
@@ -90,32 +146,11 @@ export class ChatpostsController {
     return this.chatpostsService.findOneWithCount(id);
   }
 
-  @Patch(":id")
-  update(
-    @Param("id") id: string,
-    @Body() updateChatpostDto: UpdateChatpostDto
-  ) {
-    return this.chatpostsService.update(id, updateChatpostDto);
-  }
-
-  @Delete(":id")
-  @ApiOperation({
-    summary: "chatpost 제거",
-    description: "chatpost 제거 및 유저.folders 업데이트",
-  })
-  async remove(
-    @Param("id") id: string,
-    @Body() removeChatpostDto: RemoveChatpostDto
-  ) {
-    await this.chatpostsService.remove(id);
-
-    const user = await this.userService.findOneById(removeChatpostDto.userId);
-    const chatpost = await this.chatpostsService.findOne(id);
-    const updatedFolders = await this.userService.removeChatpostIdFromFolder(
-      user,
-      chatpost
-    );
-
-    return updatedFolders;
-  }
+  // @Patch(":id")
+  // update(
+  //   @Param("id") id: string,
+  //   @Body() updateChatpostDto: UpdateChatpostDto
+  // ) {
+  //   return this.chatpostsService.update(id, updateChatpostDto);
+  // }
 }

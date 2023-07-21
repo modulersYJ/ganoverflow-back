@@ -1,11 +1,12 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { CreateChatpostDto } from "./dto/create-chatpost.dto";
-import { UpdateChatpostDto } from "./dto/update-chatpost.dto";
+
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Chatpost } from "./entities/chatpost.entity";
 import { User } from "src/user/entities/user.entity";
 import { Category } from "src/categories/entities/category.entity";
+import { UpdateChatpostNameDto } from "./dto/update-chatpost-name.dto";
 
 @Injectable()
 export class ChatpostsService {
@@ -31,6 +32,16 @@ export class ChatpostsService {
 
     const savedPost = await this.chatpostRepository.save(chatpost);
     return savedPost;
+  }
+
+  async updateName(
+    targetPost: Chatpost,
+    updateChatpostNameDto: UpdateChatpostNameDto
+  ) {
+    const newPostName = updateChatpostNameDto.chatpostName;
+    targetPost.chatpostName = newPostName;
+    await this.chatpostRepository.save(targetPost);
+    return newPostName;
   }
 
   async findAll() {
@@ -89,10 +100,6 @@ export class ChatpostsService {
       await this.chatpostRepository.save(post);
     }
     return post;
-  }
-
-  update(id: string, updateChatpostDto: UpdateChatpostDto) {
-    return `This action updates a #${id} chatpost`;
   }
 
   async remove(id: Chatpost["chatPostId"]) {

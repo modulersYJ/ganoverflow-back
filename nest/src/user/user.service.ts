@@ -159,6 +159,38 @@ export class UserService {
     return folders as IFolder[];
   }
 
+  //chatpost 컨트롤러에서 chatpost name 업데이트 시...
+  async updateChatpostNameWithFolders(
+    user: User,
+    targetPost: Chatpost,
+    targetFolderId: number,
+    newPostName: string
+  ): Promise<IFolder[]> {
+    const folders: IFolder[] = JSON.parse(user.folders);
+
+    const newFolders = folders.map((folder: IFolder) => {
+      if (folder.folderId === targetFolderId) {
+        return {
+          ...folder,
+          chatposts: folder.chatposts.map((chatpost: IChatpostBasicInfo) => {
+            if (chatpost.chatPostId === targetPost.chatPostId) {
+              return {
+                ...chatpost,
+                chatpostName: newPostName,
+              };
+            }
+
+            return chatpost as IChatpostBasicInfo;
+          }),
+        };
+      }
+
+      return folder as IFolder;
+    });
+
+    return newFolders as IFolder[];
+  }
+
   // chatpost 서비스에서 chapost 추가 시...
   async pushChatpostIdToFolder(user: User, chatpost: Chatpost) {
     const folders: IFolder[] = JSON.parse(user.folders);
@@ -193,32 +225,3 @@ export class UserService {
     return JSON.parse(newFolders) as IFolder[];
   }
 }
-//   // push, remove, overwrite의 처리결과를 client와의 정합성 유지를 위해 restruct 및 반환시켜주는 역할
-//   async restructFoldersForClient(folders: string) {
-//     const parsedFolders = JSON.parse(folders); // IFolder[] => IFolderClient[] 구조변형
-
-//     // map은 비동기 함수를 관리하지 못하므로 Promise.all을 사용해 비동기 함수 관리함!
-//     const restructedFolders = await Promise.all(
-//       parsedFolders.map(async (folder: any) => {
-//         folder.chatposts = [] as IChatpostBasicInfo[];
-
-//         folder.chatposts = await Promise.all(
-//           folder.chatpostIds.map(async (chatPostId: string) => {
-//             const { chatpostName } = await this.chatPostsService.findOne(
-//               chatPostId
-//             );
-
-//             return {
-//               chatPostId: chatPostId,
-//               chatpostName,
-//             } as IChatpostBasicInfo;
-//           })
-//         );
-//         delete folder.chatpostIds;
-//         return folder;
-//       })
-//     );
-
-//     return restructedFolders as IFolder[];
-//   }
-// }
