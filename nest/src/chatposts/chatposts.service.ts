@@ -84,21 +84,12 @@ export class ChatpostsService {
   }
 
   async findOne(id: string) {
-    // return `This action returns a #${id} chatpost`;
     const post = await this.chatpostRepository.findOneOrFail({
       where: { chatPostId: id },
       relations: {
         chatPair: true,
-        comments: { user: true },
-        userId: true,
-        stars: true,
       },
     });
-
-    if (post) {
-      post.viewCount += 1; // viewCount 증가
-      await this.chatpostRepository.save(post);
-    }
     return post;
   }
 
