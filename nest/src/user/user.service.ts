@@ -1,9 +1,7 @@
 import {
   BadRequestException,
-  Inject,
   Injectable,
   NotFoundException,
-  forwardRef,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
@@ -12,15 +10,16 @@ import { User } from "src/user/entities/user.entity";
 import { LoginUserDto } from "./dto/login-user.dto";
 import { RegisterUserDto } from "./dto/register-user.dto";
 import { hashTokenSync } from "src/UTILS/hash.util";
-import { FoldersService } from "src/folders/folders.service";
-
+// import { FoldersService } from "src/folders/folders.service";
+import { ChatpostsService } from "src/chatposts/chatposts.service";
+import { Chatpost } from "src/chatposts/entities/chatpost.entity";
+import { IChatpostBasicInfo, IFolder } from "./entities/IFolders";
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-    @Inject(forwardRef(() => FoldersService))
-    private foldersService: FoldersService
+    private readonly chatPostsService: ChatpostsService
   ) {}
 
   myPage(userId: string) {
@@ -45,10 +44,16 @@ export class UserService {
       // status: "N",
       provider: null,
       social_id: null,
+      // 기본 폴더 생성
+      folders: JSON.stringify([
+        {
+          folderId: 0,
+          folderName: "default folder",
+          chatposts: [],
+        },
+      ]),
     };
     const newUser = await this.usersRepository.save(user);
-
-    const folder = this.foldersService.createDefaultFolder(newUser);
 
     // 사용자 저장 및 반환
     return newUser;
@@ -131,5 +136,92 @@ export class UserService {
     if (isMatch) {
       return current;
     }
+  }
+
+  //============Folders 관련===========
+  // 사용자 폴더 목록 & 매치되는 chatpost기본정보 포함 반환
+  async getFoldersWithPosts(user: User) {
+    const resFolders: IFolder[] = JSON.parse(user.folders);
+
+    // 재구조화된 resFolders 반환
+    return resFolders as IFolder[];
+  }
+
+  // cli에서 드래그앤드롭에 의해 업데이트 & 폴더추가 경우 overwrite하는 용도 (순서, 소속)
+  async overwriteFoldersWithPosts(
+    user: User,
+    folders: IFolder[]
+  ): Promise<IFolder[]> {
+    const newFolders = JSON.stringify(folders);
+    user.folders = newFolders;
+    await this.usersRepository.save(user);
+
+    return folders as IFolder[];
+  }
+
+  //chatpost 컨트롤러에서 chatpost name 업데이트 시...
+  async updateChatpostNameWithFolders(
+    user: User,
+    targetPost: Chatpost,
+    targetFolderId: number,
+    newPostName: string
+  ): Promise<IFolder[]> {
+    const folders: IFolder[] = JSON.parse(user.folders);
+
+    const newFolders = folders.map((folder: IFolder) => {
+      if (folder.folderId === targetFolderId) {
+        return {
+          ...folder,
+          chatposts: folder.chatposts.map((chatpost: IChatpostBasicInfo) => {
+            if (chatpost.chatPostId === targetPost.chatPostId) {
+              return {
+                ...chatpost,
+                chatpostName: newPostName,
+              };
+            }
+
+            return chatpost as IChatpostBasicInfo;
+          }),
+        };
+      }
+
+      return folder as IFolder;
+    });
+
+    return newFolders as IFolder[];
+  }
+
+  // chatpost 서비스에서 chapost 추가 시...
+  async pushChatpostIdToFolder(user: User, chatpost: Chatpost) {
+    const folders: IFolder[] = JSON.parse(user.folders);
+    folders[0].chatposts.unshift({
+      chatPostId: chatpost.chatPostId,
+      chatpostName: chatpost.chatpostName,
+    } as IChatpostBasicInfo);
+
+    const newFolders = JSON.stringify(folders);
+    user.folders = newFolders;
+    await this.usersRepository.save(user);
+  }
+
+  // chatpost 서비스에서 chatpost 제거 시...
+  async removeChatpostIdFromFolder(
+    user: User,
+    chatpost: Chatpost
+  ): Promise<IFolder[]> {
+    const targetId = chatpost.chatPostId;
+
+    const newFolders = JSON.stringify(
+      JSON.parse(user.folders).map((folder: IFolder) => {
+        folder.chatposts = folder.chatposts.filter((chatpost) => {
+          return chatpost.chatPostId !== targetId;
+        });
+        return folder;
+      })
+    );
+
+    user.folders = newFolders;
+    await this.usersRepository.save(user);
+    return JSON.parse(newFolders) as IFolder[];
   }
 }

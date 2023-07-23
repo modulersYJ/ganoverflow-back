@@ -5,9 +5,13 @@ import { CreateChatPairDto } from "src/chat-pairs/dto/create-chat-pair.dto";
 export class CreateChatpostDto {
   @ApiProperty()
   @IsOptional()
-  title: string;
+  chatpostName: string;
 
   @ApiProperty({ type: [CreateChatPairDto] })
   @IsOptional()
   chatPair: CreateChatPairDto[];
+
+  @ApiProperty()
+  @IsOptional()
+  categoryName: string;
 }

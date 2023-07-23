@@ -1,12 +1,20 @@
-import { Body, Controller, Post, Get, Param, UseGuards } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Post,
+  Get,
+  Param,
+  UseGuards,
+  Put,
+} from "@nestjs/common";
 import { UserService } from "./user.service";
 import { User } from "src/user/entities/user.entity";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
-import { LoginUserDto } from "./dto/login-user.dto";
 import { RegisterUserDto } from "./dto/register-user.dto";
 import { AuthGuard } from "src/auth/auth.guard";
 import { Public } from "src/auth/public.decorator";
 
+@ApiBearerAuth("jwt")
 @ApiTags("user")
 @Controller("user")
 export class UserController {
@@ -32,12 +40,32 @@ export class UserController {
     return this.userService.register(registerUserDto);
   }
 
-  // @Post("login")
-  // @ApiOperation({
-  //   summary: "사용자 login",
-  //   description: "추후 cognito 연결, usersService에 등록된 사용자 login",
-  // })
-  // async login(@Body() loginUserDto: LoginUserDto): Promise<User> {
-  //   return this.userService.validateUser(loginUserDto);
-  // }
+  @UseGuards(AuthGuard)
+  @Get("folders/:userId")
+  @ApiOperation({
+    summary: "사용자의 폴더 & 종속 포스트 기본정보 조회",
+    description: "사용자의 폴더 & 종속 포스트 기본정보 조회",
+  })
+  async getFolders(@Param("userId") userId: string) {
+    const targetUser = await this.userService.findOneById(userId);
+    return this.userService.getFoldersWithPosts(targetUser);
+  }
+
+  @UseGuards(AuthGuard)
+  @Put("folders/:userId")
+  @ApiOperation({
+    summary: "사용자의 폴더 & 종속 포스트 정보 갱신",
+    description:
+      "사용자의 폴더 & 종속 포스트 정보를 갱신 ( post 소속변경 or 폴더 추가, 제거 시 )",
+  })
+  async overwriteFoldersWithPosts(
+    @Param("userId") userId: string,
+    @Body() folders: any[]
+  ) {
+    const targetUser = await this.userService.findOneById(userId);
+    if (folders === undefined) {
+      throw new Error("folders is undefined");
+    }
+    return this.userService.overwriteFoldersWithPosts(targetUser, folders);
+  }
 }

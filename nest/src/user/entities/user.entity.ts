@@ -2,7 +2,6 @@ import { IsOptional } from "class-validator";
 import { Category } from "src/categories/entities/category.entity";
 import { Chatpost } from "src/chatposts/entities/chatpost.entity";
 import { Comment } from "src/comments/entities/comment.entity";
-import { Folder } from "src/folders/entities/folder.entity";
 import { Follow } from "src/follows/entities/follow.entity";
 import { Star } from "src/stars/entities/star.entity";
 import {
@@ -109,7 +108,6 @@ export class User {
   @JoinColumn({ name: "followeeId" })
   followeeId: Follow[];
 
-  @OneToMany(() => Folder, (folder) => folder.user, { nullable: true })
-  @JoinColumn({ name: "userId" }) // "userId"로 변경
-  folders: Folder[];
+  @Column({ type: "text", nullable: true }) // JSON 데이터를 문자열로 저장하기 위해 열 타입을 'text'로 설정
+  folders: string;
 }
