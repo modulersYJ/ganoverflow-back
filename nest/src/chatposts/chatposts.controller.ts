@@ -8,6 +8,7 @@ import {
   Delete,
   Req,
   NotFoundException,
+  Query,
 } from "@nestjs/common";
 import { ChatpostsService } from "./chatposts.service";
 import { CreateChatpostDto } from "./dto/create-chatpost.dto";
@@ -124,9 +125,9 @@ export class ChatpostsController {
   }
 
   @Public()
-  @Get()
-  findAll() {
-    return this.chatpostsService.findAll();
+  @Get("")
+  findAll(@Query("page") page: number) {
+    return this.chatpostsService.findAll(page);
   }
 
   @Get("my-chats")
