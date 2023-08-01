@@ -44,8 +44,8 @@ export class ChatpostsService {
     return newPostName;
   }
 
-  async findAll() {
-    const posts = await this.chatpostRepository.find({
+  async findAll(page: number) {
+    const [posts, postCount] = await this.chatpostRepository.findAndCount({
       relations: {
         chatPair: true,
         userId: true,
@@ -55,8 +55,11 @@ export class ChatpostsService {
       order: {
         createdAt: "DESC",
       },
+      take: 10,
+      skip: 10 * (page - 1),
     });
-    return posts;
+    // const totalCount = await this.chatpostRepository.count
+    return { posts: posts, postCount: postCount };
     // return `This action returns all chatposts`;
   }
 
