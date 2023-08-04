@@ -51,6 +51,7 @@ export class ChatpostsService {
         userId: true,
         comments: true,
         stars: true,
+        categoryName: true,
       },
       order: {
         createdAt: "DESC",
