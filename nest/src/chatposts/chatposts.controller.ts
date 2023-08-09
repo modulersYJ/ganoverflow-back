@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  Put,
   Post,
   Body,
   Patch,
@@ -23,6 +24,7 @@ import { CategoriesService } from "src/categories/categories.service";
 import { RemoveChatpostDto } from "./dto/remove-chatpost.dto";
 
 import { UpdateChatpostNameDto } from "./dto/update-chatpost-name.dto";
+import { PutChatpostDto } from "./dto/put-chatpost.dto";
 
 @ApiBearerAuth("jwt")
 @ApiTags("chatposts")
@@ -64,6 +66,42 @@ export class ChatpostsController {
     const updatedFolders = await this.userService.pushChatpostIdToFolder(
       user,
       chatPost
+    );
+    console.log("updatedFolders!!!!", updatedFolders);
+    return updatedFolders; // foldersWithChatposts 정합성 위해 반환
+  }
+
+  @Put(":id")
+  @ApiOperation({
+    summary: "chatpost 해당 리소스 오버라이드",
+    description: "chatpost name 업데이트",
+  })
+  async putOneById(
+    @Param("id") id: string,
+    @Body() putChatpostDto: PutChatpostDto,
+    @Req() req
+  ) {
+    const user = await this.userService.findOneByUsername(req.user.username);
+
+    // ^ category 먼저 찾아야함.
+    const categoryName = await this.categoriesService.findOne(
+      putChatpostDto.categoryName
+    );
+
+    // const chatPostId = chatPost.chatPostId;
+    const chatPost = await this.chatpostsService.put(
+      id,
+      putChatpostDto,
+      user,
+      categoryName
+    );
+
+    // ^ chatPost 수정 시, 해당 user의 folders에 업데이트
+    const updatedFolders = await this.userService.updateChatpostNameWithFolders(
+      user,
+      chatPost,
+      putChatpostDto.folderId,
+      putChatpostDto.chatpostName
     );
 
     return updatedFolders; // foldersWithChatposts 정합성 위해 반환
