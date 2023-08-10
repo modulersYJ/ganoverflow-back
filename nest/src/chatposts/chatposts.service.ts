@@ -117,6 +117,11 @@ export class ChatpostsService {
         chatPair: true,
         categoryName: true,
       },
+      order: {
+        chatPair: {
+          order: "ASC",
+        },
+      },
     });
     return post;
   }

@@ -7,6 +7,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { CreateChatpostDto } from "src/chatposts/dto/create-chatpost.dto";
 import { ChatpostsService } from "src/chatposts/chatposts.service";
 import { Chatpost } from "src/chatposts/entities/chatpost.entity";
+import { PutChatpostDto } from "src/chatposts/dto/put-chatpost.dto";
 
 @Injectable()
 export class ChatPairsService {
@@ -26,6 +27,14 @@ export class ChatPairsService {
       return savedPairs;
     });
     return savedPairs;
+  }
+
+  async removeAllByChatpostId(chatpostId: Chatpost["chatPostId"]) {
+    const removedPairs = await this.chatPairRepository.delete({
+      chatPost: { chatPostId: chatpostId },
+    });
+
+    return removedPairs;
   }
 
   findAll() {

@@ -88,13 +88,19 @@ export class ChatpostsController {
       putChatpostDto.categoryName
     );
 
-    // const chatPostId = chatPost.chatPostId;
+    // ^ chatPost 수정
     const chatPost = await this.chatpostsService.put(
       id,
       putChatpostDto,
       user,
       categoryName
     );
+
+    //  ^ chatPair 삭제
+    await this.chatpairsService.removeAllByChatpostId(id);
+
+    // ^ 해당 챗포스트 관련 챗페어 새로 등록
+    await this.chatpairsService.create(putChatpostDto, chatPost);
 
     // ^ chatPost 수정 시, 해당 user의 folders에 업데이트
     const updatedFolders = await this.userService.updateChatpostNameWithFolders(
