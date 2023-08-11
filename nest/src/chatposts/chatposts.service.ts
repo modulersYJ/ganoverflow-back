@@ -34,6 +34,32 @@ export class ChatpostsService {
     return savedPost;
   }
 
+  async put(
+    id: Chatpost["chatPostId"],
+    createChatpostDto: CreateChatpostDto,
+    user: User,
+    categoryName?: Category
+  ) {
+    // chatPostId를 사용해 기존 포스트를 찾는다.
+    const existingPost = await this.chatpostRepository.findOneOrFail({
+      where: { chatPostId: id },
+    });
+
+    if (!existingPost) {
+      console.log(`Chatpost with ID ${id} not found`);
+      return;
+    }
+
+    existingPost.userId = user;
+    existingPost.delYn = "N";
+    existingPost.chatpostName = createChatpostDto.chatpostName;
+    existingPost.categoryName = categoryName;
+
+    const updatedPost = await this.chatpostRepository.save(existingPost);
+
+    return updatedPost;
+  }
+
   async updateName(
     targetPost: Chatpost,
     updateChatpostNameDto: UpdateChatpostNameDto
@@ -59,9 +85,7 @@ export class ChatpostsService {
       take: 10,
       skip: 10 * (page - 1),
     });
-    // const totalCount = await this.chatpostRepository.count
     return { posts: posts, postCount: postCount };
-    // return `This action returns all chatposts`;
   }
 
   async findAllByUserId(user: User) {
@@ -69,7 +93,6 @@ export class ChatpostsService {
   }
 
   async findOneWithCount(id: string) {
-    // return `This action returns a #${id} chatpost`;
     const post = await this.chatpostRepository.findOneOrFail({
       where: { chatPostId: id },
       relations: {
@@ -81,7 +104,7 @@ export class ChatpostsService {
     });
 
     if (post) {
-      post.viewCount += 1; // viewCount 증가
+      post.viewCount += 1;
       await this.chatpostRepository.save(post);
     }
     return post;
@@ -92,6 +115,12 @@ export class ChatpostsService {
       where: { chatPostId: id },
       relations: {
         chatPair: true,
+        categoryName: true,
+      },
+      order: {
+        chatPair: {
+          order: "ASC",
+        },
       },
     });
     return post;

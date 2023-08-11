@@ -188,6 +188,10 @@ export class UserService {
       return folder as IFolder;
     });
 
+    user.folders = JSON.stringify(newFolders);
+
+    await this.usersRepository.save(user);
+
     return newFolders as IFolder[];
   }
 
@@ -202,6 +206,7 @@ export class UserService {
     const newFolders = JSON.stringify(folders);
     user.folders = newFolders;
     await this.usersRepository.save(user);
+    return JSON.parse(newFolders) as IFolder[];
   }
 
   // chatpost 서비스에서 chatpost 제거 시...
