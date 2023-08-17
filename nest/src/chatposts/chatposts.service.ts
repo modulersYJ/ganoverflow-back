@@ -100,6 +100,7 @@ export class ChatpostsService {
         comments: { user: true },
         userId: true,
         stars: true,
+        categoryName: true,
       },
     });
 
