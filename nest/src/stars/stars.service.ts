@@ -89,6 +89,14 @@ export class StarsService {
     };
   }
 
+  // async findChatpostsUserLiked(user: User) {
+  //   const posts = await this.starRepository.find({
+  //     where: { user: user },
+  //     relations: { chatPostId: true },
+  //   });
+  //   return posts;
+  // }
+
   update(id: number, updateStarDto: UpdateStarDto) {
     return `This action updates a #${id} star`;
   }

@@ -6,6 +6,7 @@ import {
   Param,
   UseGuards,
   Put,
+  Req,
 } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { User } from "src/user/entities/user.entity";
@@ -13,21 +14,35 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { RegisterUserDto } from "./dto/register-user.dto";
 import { AuthGuard } from "src/auth/auth.guard";
 import { Public } from "src/auth/public.decorator";
+import { ChatpostsService } from "src/chatposts/chatposts.service";
+import { StarsService } from "src/stars/stars.service";
 
 @ApiBearerAuth("jwt")
 @ApiTags("user")
 @Controller("user")
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly starsService: StarsService,
+    private readonly chatpostsService: ChatpostsService
+  ) {}
 
   @UseGuards(AuthGuard)
-  @Get("mypage/:userId")
+  @Get("my-page")
   @ApiOperation({
     summary: "마이페이지",
     description: "마이페이지 - 아직 서비스 없음",
   })
-  getMyPage(@Param("userId") userId: string) {
-    return this.userService.myPage(userId);
+  async getMyPage(@Req() request) {
+    console.log("requser", request.user);
+    const user = await this.userService.findOneByUsername(
+      request.user.username
+    );
+    const posts = await this.chatpostsService.findMyPosts(user);
+    const favoritePosts = await this.chatpostsService.findChatpostsUserLiked(
+      user
+    );
+    return this.userService.mypage(user, posts, favoritePosts);
   }
 
   @Public()

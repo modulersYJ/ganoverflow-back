@@ -89,7 +89,23 @@ export class ChatpostsService {
   }
 
   async findAllByUserId(user: User) {
+    console.log(
+      "🚀 ~ file: chatposts.service.ts:92 ~ ChatpostsService ~ findAllByUserId ~ user:",
+      user
+    );
     return this.chatpostRepository.find({ where: { userId: user } });
+  }
+
+  async findMyPosts(user: User) {
+    const posts = await this.chatpostRepository.find({
+      // where: { userId: user },
+      take: 10,
+    });
+    console.log(
+      "🚀 ~ file: chatposts.service.ts:104 ~ ChatpostsService ~ findMyPosts ~ posts:",
+      posts
+    );
+    return posts;
   }
 
   async findOneWithCount(id: string) {
@@ -130,5 +146,20 @@ export class ChatpostsService {
   async remove(id: Chatpost["chatPostId"]) {
     this.chatpostRepository.delete(id);
     return `This action removes a #${id} chatpost`;
+  }
+
+  async findChatpostsUserLiked(user) {
+    const posts = await this.chatpostRepository
+      .createQueryBuilder("chatpost")
+      .leftJoinAndSelect("chatpost.stars", "star")
+      .where("star.user = :userId", { userId: user.id })
+      .andWhere("star.value = :value", { value: "1" })
+      .take(10)
+      .getMany();
+    console.log(
+      "🚀 ~ file: chatposts.service.ts:157 ~ ChatpostsService ~ findChatpostsUserLiked ~ posts:",
+      posts
+    );
+    return posts;
   }
 }
