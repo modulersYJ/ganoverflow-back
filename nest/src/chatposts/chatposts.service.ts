@@ -72,6 +72,7 @@ export class ChatpostsService {
 
   async findAll(page: number) {
     const [posts, postCount] = await this.chatpostRepository.findAndCount({
+      where: { delYn: "N" },
       relations: {
         chatPair: true,
         userId: true,
@@ -144,12 +145,12 @@ export class ChatpostsService {
   }
 
   async remove(id: Chatpost["chatPostId"]) {
-    this.chatpostRepository.delete(id);
-    return `This action removes a #${id} chatpost`;
+    await this.chatpostRepository.update(id, { delYn: "Y" });
+    return `This action marks a #${id} chatpost as deleted`;
   }
-  
-  async removeManyByIds(ids: Chatpost['chatPostId'][]){
-    this.chatpostRepository.delete(ids);
+
+  async removeManyByIds(ids: Chatpost["chatPostId"][]) {
+    await this.chatpostRepository.update(ids, { delYn: "Y" });
   }
 
   async findChatpostsUserLiked(user) {
