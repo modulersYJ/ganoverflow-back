@@ -150,6 +150,19 @@ export class UserService {
     return resFolders as IFolder[];
   }
 
+  // 폴더 소속 posts의 id 배열 반환
+  async findAllPostIdsByFolderId(user: User, folderId: IFolder["folderId"]) {
+    const folders: IFolder[] = JSON.parse(user.folders);
+
+    const targetFolder = folders.find(
+      (folder: IFolder) => folder.folderId === folderId
+    );
+    const targetFolderChatpostIds = targetFolder.chatposts.map(
+      (post: IChatpostBasicInfo) => post.chatPostId
+    );
+
+    return targetFolderChatpostIds;
+  }
   // cli에서 드래그앤드롭에 의해 업데이트 & 폴더추가 경우 overwrite하는 용도 (순서, 소속)
   async overwriteFoldersWithPosts(
     user: User,
@@ -227,7 +240,20 @@ export class UserService {
         return folder;
       })
     );
+    user.folders = newFolders;
+    await this.usersRepository.save(user);
+    return JSON.parse(newFolders) as IFolder[];
+  }
 
+  async removeFolderWithPosts(
+    user: User,
+    folderId: number
+  ): Promise<IFolder[]> {
+    const newFolders = JSON.stringify(
+      JSON.parse(user.folders).filter((folder: IFolder) => {
+        return folder.folderId !== folderId;
+      })
+    );
     user.folders = newFolders;
     await this.usersRepository.save(user);
     return JSON.parse(newFolders) as IFolder[];

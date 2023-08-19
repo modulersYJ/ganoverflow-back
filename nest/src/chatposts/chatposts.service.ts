@@ -147,6 +147,10 @@ export class ChatpostsService {
     this.chatpostRepository.delete(id);
     return `This action removes a #${id} chatpost`;
   }
+  
+  async removeManyByIds(ids: Chatpost['chatPostId'][]){
+    this.chatpostRepository.delete(ids);
+  }
 
   async findChatpostsUserLiked(user) {
     const posts = await this.chatpostRepository
