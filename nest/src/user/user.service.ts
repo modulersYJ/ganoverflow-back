@@ -18,12 +18,15 @@ import { IChatpostBasicInfo, IFolder } from "./entities/IFolders";
 export class UserService {
   constructor(
     @InjectRepository(User)
-    private usersRepository: Repository<User>,
-    private readonly chatPostsService: ChatpostsService
+    private usersRepository: Repository<User>
   ) {}
 
-  myPage(userId: string) {
-    return `My page of ${userId} `;
+  async mypage(user: User, posts: Chatpost[], favoritePosts: Chatpost[]) {
+    return {
+      hi: `${user.username}`,
+      myPosts: posts,
+      favoritePosts: favoritePosts,
+    };
   }
 
   async findOneById(id: string): Promise<User> {

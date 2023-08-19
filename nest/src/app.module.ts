@@ -39,6 +39,7 @@ import { ChatPairsModule } from "./chat-pairs/chat-pairs.module";
         database: configService.get("DB_NAME"),
         entities: [__dirname + "/**/*.entity{.ts,.js}"],
         synchronize: true,
+        logging: ["query", "error"],
       }),
     }),
     UserModule,
