@@ -1,14 +1,9 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsOptional } from "class-validator";
-import { Chatpost } from "../entities/chatpost.entity";
+import { IsNotEmpty } from "class-validator";
 import { User } from "src/user/entities/user.entity";
 import { IFolder } from "src/user/entities/IFolders";
 
-export class UpdateChatpostNameDto {
-  @ApiProperty()
-  @IsOptional()
-  chatpostName: Chatpost["chatpostName"];
-
+export class RemoveAllByFolderIdDto {
   @ApiProperty()
   @IsNotEmpty()
   userId: User["id"];

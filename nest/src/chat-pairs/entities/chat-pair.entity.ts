@@ -13,6 +13,8 @@ export class ChatPair {
   @Column()
   order: number;
 
-  @ManyToOne(() => Chatpost, (chatPost) => chatPost.chatPair)
+  @ManyToOne(() => Chatpost, (chatPost) => chatPost.chatPair, {
+    onDelete: "CASCADE",
+  })
   chatPost: Chatpost;
 }
