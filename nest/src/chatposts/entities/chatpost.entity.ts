@@ -46,7 +46,9 @@ export class Chatpost {
   @IsOptional()
   viewCount: number;
 
-  @OneToMany(() => ChatPair, (chatPair) => chatPair.chatPost)
+  @OneToMany(() => ChatPair, (chatPair) => chatPair.chatPost, {
+    onDelete: "CASCADE",
+  })
   chatPair: ChatPair[];
 
   @OneToMany(() => Comment, (comment) => comment.chatPost)

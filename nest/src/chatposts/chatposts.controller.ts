@@ -25,6 +25,10 @@ import { RemoveChatpostDto } from "./dto/remove-chatpost.dto";
 
 import { UpdateChatpostNameDto } from "./dto/update-chatpost-name.dto";
 import { PutChatpostDto } from "./dto/put-chatpost.dto";
+import { User } from "src/user/entities/user.entity";
+import { IFolder } from "src/user/entities/IFolders";
+import { Chatpost } from "./entities/chatpost.entity";
+import { RemoveAllByFolderIdDto } from "./dto/remove-all-chatpost-byFolderId.dto";
 
 @ApiBearerAuth("jwt")
 @ApiTags("chatposts")
@@ -147,23 +151,58 @@ export class ChatpostsController {
     return newFolders;
   }
 
+  @Delete("removeAllByFolderId")
+  @ApiOperation({
+    summary:
+      "특정 Folder 소속 chatposts 제거 & user.folders에서 폴더 및 하위 포스트 제거",
+  })
+  async removeAllByFolderId(
+    @Body() removeAllByFolderIdDto: RemoveAllByFolderIdDto
+  ) {
+    const user = await this.userService.findOneById(
+      removeAllByFolderIdDto.userId
+    );
+
+    // 타겟 포스트s 찾아오기
+    const targetPostIds = await this.userService.findAllPostIdsByFolderId(
+      user,
+      removeAllByFolderIdDto.folderId
+    );
+
+    // 타겟 포스트s 제거
+    if (targetPostIds.length !== 0) {
+      await this.chatpostsService.removeManyByIds(targetPostIds);
+    }
+
+    // 해당 폴더 및 하위포스트 제거
+    const updatedFolders = await this.userService.removeFolderWithPosts(
+      user,
+      removeAllByFolderIdDto.folderId
+    );
+
+    return updatedFolders;
+  }
+
+  // 놀라운 사실! 동적 라우트 파라미터가 있는 엔드포인트는 항상 고정된 경로보다 아래에 위치해야함..
   @Delete(":id")
   @ApiOperation({
     summary: "chatpost 제거",
     description: "chatpost 제거 및 유저.folders 업데이트",
   })
   async remove(
-    @Param("id") id: string,
+    @Param("id") id: Chatpost["chatPostId"],
     @Body() removeChatpostDto: RemoveChatpostDto
   ) {
-    await this.chatpostsService.remove(id);
-
     const user = await this.userService.findOneById(removeChatpostDto.userId);
     const chatpost = await this.chatpostsService.findOne(id);
+
+    // user.folders에서도 제거
     const updatedFolders = await this.userService.removeChatpostIdFromFolder(
       user,
       chatpost
     );
+
+    await this.chatpostsService.remove(id);
 
     return updatedFolders;
   }
