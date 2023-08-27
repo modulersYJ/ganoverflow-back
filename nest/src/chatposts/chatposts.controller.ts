@@ -214,9 +214,12 @@ export class ChatpostsController {
   }
 
   @Get("my-chats")
-  async findAllByUserId(@Req() request) {
-    const user = await this.userService.findOneById(request.user.id);
-    return this.chatpostsService.findAllByUserId(user);
+  async findAllByUserId(@Query("userId") userId: string) {
+    console.log("User ID: ", userId);
+    const user = await this.userService.findOneById(userId);
+    const res = await this.chatpostsService.findAllByUserId(user);
+    console.log("my-chats - res:", res);
+    return res;
   }
 
   @Get(":id")

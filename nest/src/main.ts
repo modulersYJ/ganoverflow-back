@@ -9,7 +9,11 @@ import { ConfigService } from "@nestjs/config"; // env관련 log 출력을 위�
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: {
-      origin: ["https://www.ganoverflow.com", "http://localhost:3000"],
+      origin: [
+        "https://www.ganoverflow.com",
+        "http://localhost:3000",
+        "chrome-extension://ikpaofngnfenekdamldddlhmnfnombgf",
+      ],
       methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
       credentials: true,
     },

@@ -90,11 +90,16 @@ export class ChatpostsService {
   }
 
   async findAllByUserId(user: User) {
-    console.log(
-      "🚀 ~ file: chatposts.service.ts:92 ~ ChatpostsService ~ findAllByUserId ~ user:",
-      user
-    );
-    return this.chatpostRepository.find({ where: { userId: user } });
+    console.log("🚀 ~ ChatpostsService ~ findAllByUserId ~ user:", user);
+
+    const userForQuery = new User();
+    userForQuery.id = user.id;
+
+    const res = await this.chatpostRepository.find({
+      where: { userId: userForQuery },
+    });
+    console.log("chatpostsService - findAllByUserId:", res);
+    return res;
   }
 
   async findMyPosts(user: User) {
