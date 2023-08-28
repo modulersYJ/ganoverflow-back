@@ -53,6 +53,7 @@ export class ChatpostsService {
     existingPost.delYn = "N";
     existingPost.chatpostName = createChatpostDto.chatpostName;
     existingPost.categoryName = categoryName;
+    existingPost.tags = createChatpostDto.tags;
 
     const updatedPost = await this.chatpostRepository.save(existingPost);
 
