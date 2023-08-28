@@ -16,7 +16,7 @@ export class Comment {
   commentId: number;
 
   @ManyToOne(() => Chatpost, (chatpost) => chatpost.comments)
-  //   @JoinColumn()
+  @JoinColumn({ name: "chatPostId" })
   chatPost: Chatpost;
 
   @ManyToOne(() => User, (user) => user.id)
