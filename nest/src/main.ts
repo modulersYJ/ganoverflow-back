@@ -12,7 +12,7 @@ async function bootstrap() {
       origin: [
         "https://www.ganoverflow.com",
         "http://localhost:3000",
-        "chrome-extension://ikpaofngnfenekdamldddlhmnfnombgf",
+        "chrome-extension://elobpgcegacdfcocbhlbmkbonppnlome",
       ],
       methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
       credentials: true,

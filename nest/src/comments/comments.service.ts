@@ -30,11 +30,9 @@ export class CommentsService {
   }
 
   async findCommentsByChatPostId(chatPostId: string) {
-    // return `This action returns all comments`;
-    const chatPost = await this.chatPostsService.findOne(chatPostId);
     return this.commentsRepository.find({
       where: {
-        chatPost: chatPost,
+        chatPost: { chatPostId: chatPostId },
       },
     });
   }

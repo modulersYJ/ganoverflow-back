@@ -20,14 +20,13 @@ export class ChatpostsService {
     user: User,
     categoryName?: Category
   ) {
-    console.log("@@userId", user.id);
-
     const chatpost = {
-      userId: user,
+      userId: user.id,
       createdAt: new Date(),
       delYn: "N",
       chatpostName: createChatpostDto.chatpostName,
       categoryName: categoryName,
+      tags: createChatpostDto.tags,
     };
 
     const savedPost = await this.chatpostRepository.save(chatpost);
@@ -50,7 +49,7 @@ export class ChatpostsService {
       return;
     }
 
-    existingPost.userId = user;
+    existingPost.user = user;
     existingPost.delYn = "N";
     existingPost.chatpostName = createChatpostDto.chatpostName;
     existingPost.categoryName = categoryName;
@@ -75,7 +74,7 @@ export class ChatpostsService {
       where: { delYn: "N" },
       relations: {
         chatPair: true,
-        userId: true,
+        user: true,
         comments: true,
         stars: true,
         categoryName: true,
@@ -92,12 +91,14 @@ export class ChatpostsService {
   async findAllByUserId(user: User) {
     console.log("🚀 ~ ChatpostsService ~ findAllByUserId ~ user:", user);
 
-    const userForQuery = new User();
-    userForQuery.id = user.id;
+    // user 객체에서 ID를 추출
+    const userId = user.id;
 
-    const res = await this.chatpostRepository.find({
-      where: { userId: userForQuery },
-    });
+    const res = await this.chatpostRepository
+      .createQueryBuilder("chatpost")
+      .where("chatpost.userId = :userId", { userId })
+      .getMany();
+
     console.log("chatpostsService - findAllByUserId:", res);
     return res;
   }
@@ -120,7 +121,7 @@ export class ChatpostsService {
       relations: {
         chatPair: true,
         comments: { user: true },
-        userId: true,
+        user: true,
         stars: true,
         categoryName: true,
       },
