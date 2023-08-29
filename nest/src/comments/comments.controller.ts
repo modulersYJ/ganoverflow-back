@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Req,
+  Put,
 } from "@nestjs/common";
 import { CommentsService } from "./comments.service";
 import { CreateCommentDto } from "./dto/create-comment.dto";
@@ -14,6 +15,7 @@ import { UpdateCommentDto } from "./dto/update-comment.dto";
 import { ApiParam, ApiTags } from "@nestjs/swagger";
 import { ChatpostsService } from "src/chatposts/chatposts.service";
 import { UserService } from "src/user/user.service";
+import { LikeCommentDto } from "./dto/like-comment.dto";
 
 @ApiTags("comments")
 @Controller("comments")
@@ -39,6 +41,16 @@ export class CommentsController {
     const chatPost = await this.chatPostsService.findOne(chatPostId);
     const user = await this.userService.findOneById(req.user.sub);
     return this.commentsService.create(chatPost, user, createCommentDto);
+  }
+
+  @Put("/like/:commentId")
+  async like(
+    @Param("commentId") commentId: number,
+    @Body() likeCommentDto: LikeCommentDto,
+    @Req() req
+  ) {
+    const user = await this.userService.findOneById(req.user.sub);
+    return this.commentsService.like(commentId, user, likeCommentDto.didLike);
   }
 
   @Get("/all/:id")
