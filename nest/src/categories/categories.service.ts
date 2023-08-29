@@ -24,10 +24,20 @@ export class CategoriesService {
   }
 
   async findCategoriesAndTopTags() {
-    // 모든 카테고리를 가져옴
     const categories = await this.categoryRepository.find();
 
-    // 각 카테고리에 대한 상위 태그를 가져와서 정보를 조합
+    // "전체" 카테고리에 대한 상위 태그를 가져옴
+    const totalTopTags = await this.categoryTopTagsRepository.find({
+      where: { categoryName: "전체" },
+    });
+
+    // "전체" 카테고리의 상위5 태그 정보를 추가
+    const totalTagsInfo = totalTopTags.map((topTag) => ({
+      tag: topTag.tag,
+      frequency: topTag.frequency,
+    }));
+
+    // 각 카테고리에 대한 상위5 태그를 가져와서 정보를 조합
     const categoriesAndMatchedTopTagsInfo = await Promise.all(
       categories.map(async (category) => {
         const topTags = await this.categoryTopTagsRepository.find({
@@ -46,7 +56,14 @@ export class CategoriesService {
       })
     );
 
-    return categoriesAndMatchedTopTagsInfo;
+    // "전체" 카테고리 정보를 배열의 맨 앞에 추가
+    return [
+      {
+        categoryName: "전체",
+        tagsInfo: totalTagsInfo,
+      },
+      ...categoriesAndMatchedTopTagsInfo,
+    ];
   }
 
   findOne(categoryName: string) {
