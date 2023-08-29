@@ -131,6 +131,9 @@ export class ChatpostsService {
         stars: true,
         categoryName: true,
       },
+      order: {
+        comments: { commentId: "ASC" },
+      },
     });
 
     if (post) {
