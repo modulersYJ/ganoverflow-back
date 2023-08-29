@@ -18,14 +18,14 @@ export class ChatpostsService {
   async create(
     createChatpostDto: CreateChatpostDto,
     user: User,
-    categoryName?: Category
+    category?: Category
   ) {
     const chatpost = {
       userId: user.id,
       createdAt: new Date(),
       delYn: "N",
       chatpostName: createChatpostDto.chatpostName,
-      categoryName: categoryName,
+      category: category,
       tags: createChatpostDto.tags,
     };
 
@@ -37,7 +37,7 @@ export class ChatpostsService {
     id: Chatpost["chatPostId"],
     createChatpostDto: CreateChatpostDto,
     user: User,
-    categoryName?: Category
+    category?: Category
   ) {
     // chatPostId를 사용해 기존 포스트를 찾는다.
     const existingPost = await this.chatpostRepository.findOneOrFail({
@@ -52,7 +52,7 @@ export class ChatpostsService {
     existingPost.user = user;
     existingPost.delYn = "N";
     existingPost.chatpostName = createChatpostDto.chatpostName;
-    existingPost.categoryName = categoryName;
+    existingPost.category = category;
     existingPost.tags = createChatpostDto.tags;
 
     const updatedPost = await this.chatpostRepository.save(existingPost);
@@ -78,7 +78,33 @@ export class ChatpostsService {
         user: true,
         comments: true,
         stars: true,
-        categoryName: true,
+        category: true,
+      },
+      order: {
+        createdAt: "DESC",
+      },
+      take: 10,
+      skip: 10 * (page - 1),
+    });
+    return { posts: posts, postCount: postCount };
+  }
+
+  //===============구현중====================
+  async findByCategory(page: number, category: string) {
+    console.log("page, category======", page, category);
+    const whereObj: any =
+      category === "전체"
+        ? { delYn: "N" }
+        : { delYn: "N", categoryName: category };
+
+    const [posts, postCount] = await this.chatpostRepository.findAndCount({
+      where: whereObj,
+      relations: {
+        chatPair: true,
+        user: true,
+        comments: true,
+        stars: true,
+        category: true,
       },
       order: {
         createdAt: "DESC",
@@ -119,29 +145,28 @@ export class ChatpostsService {
   async findOneWithCount(id: string) {
     const post = await this.chatpostRepository.findOneOrFail({
       where: { chatPostId: id },
-      relations: {
-        chatPair: true,
-        comments: { user: true },
-        user: true,
-        stars: true,
-        categoryName: true,
-      },
+      relations: [
+        "chatPair",
+        "comments",
+        "comments.user",
+        "user",
+        "stars",
+        "category",
+      ],
     });
 
     if (post) {
       post.viewCount += 1;
       await this.chatpostRepository.save(post);
     }
+
     return post;
   }
 
   async findOne(id: string) {
     const post = await this.chatpostRepository.findOneOrFail({
       where: { chatPostId: id },
-      relations: {
-        chatPair: true,
-        categoryName: true,
-      },
+      relations: ["chatPair", "category"],
       order: {
         chatPair: {
           order: "ASC",

@@ -13,7 +13,7 @@ export class Category {
   @PrimaryColumn()
   categoryName: string;
 
-  @OneToMany(() => Chatpost, (chatpost) => chatpost.categoryName)
+  @OneToMany(() => Chatpost, (chatpost) => chatpost.category)
   chatposts: Chatpost[];
 
   @ManyToMany(() => User)

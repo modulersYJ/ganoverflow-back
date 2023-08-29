@@ -32,11 +32,8 @@ export class Chatpost {
   @JoinColumn({ name: "userId" })
   user: User;
 
-  @ManyToOne(() => Category, (category) => category.categoryName, {
-    nullable: true,
-  })
-  @JoinColumn({ name: "categoryName" })
-  categoryName: Category;
+  @ManyToOne((type) => Category)
+  category: Category;
 
   @Column()
   createdAt: Date;
