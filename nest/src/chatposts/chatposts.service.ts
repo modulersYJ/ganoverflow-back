@@ -90,12 +90,12 @@ export class ChatpostsService {
   }
 
   //===============구현중====================
-  async findByCategory(page: number, category: string) {
-    console.log("page, category======", page, category);
+  async findByCategory(page: number, categoryName: string) {
+    console.log("page, category======", page, categoryName);
     const whereObj: any =
-      category === "전체"
+      categoryName === "전체"
         ? { delYn: "N" }
-        : { delYn: "N", categoryName: category };
+        : { delYn: "N", category: { categoryName } };
 
     const [posts, postCount] = await this.chatpostRepository.findAndCount({
       where: whereObj,
