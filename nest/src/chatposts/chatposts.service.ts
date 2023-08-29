@@ -121,7 +121,7 @@ export class ChatpostsService {
       where: { chatPostId: id },
       relations: {
         chatPair: true,
-        comments: { user: true },
+        comments: { user: true, userLikes: true },
         user: true,
         stars: true,
         categoryName: true,

@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { CreateCommentDto } from "./dto/create-comment.dto";
 import { UpdateCommentDto } from "./dto/update-comment.dto";
 import { Repository } from "typeorm";
@@ -35,6 +35,31 @@ export class CommentsService {
         chatPost: { chatPostId: chatPostId },
       },
     });
+  }
+
+  async like(commentId: number, user: User, didLike: boolean) {
+    const comment = await this.commentsRepository.findOne({
+      where: { commentId: commentId },
+      relations: ["userLikes"],
+    });
+
+    if (!comment) {
+      throw new NotFoundException("Comment not found");
+    }
+
+    if (didLike === true) {
+      // true일 경우: N:M 테이블에 추가
+      if (!comment.userLikes.some((user) => user.id === user.id)) {
+        comment.userLikes.push(user);
+        await this.commentsRepository.save(comment);
+      }
+    } else {
+      // false일 경우: N:M 테이블에서 삭제
+      comment.userLikes = comment.userLikes.filter(
+        (user) => user.id !== user.id
+      );
+      await this.commentsRepository.save(comment);
+    }
   }
 
   findOne(id: number) {
