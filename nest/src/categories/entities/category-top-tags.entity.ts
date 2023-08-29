@@ -1,9 +1,9 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity({ synchronize: false })
+@Entity({ synchronize: false, name: "categorytoptags" })
 export class CategoryTopTags {
   @PrimaryGeneratedColumn()
-  Id: string;
+  id: string;
 
   @Column()
   categoryName: string;

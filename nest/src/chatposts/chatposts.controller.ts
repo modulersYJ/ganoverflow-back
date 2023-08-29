@@ -217,9 +217,10 @@ export class ChatpostsController {
   @Get("get-by-category")
   findByCategory(
     @Query("page") page: number,
-    @Query("category") category: string
+    @Query("category") category: string,
+    @Query("tag") tag: string
   ) {
-    return this.chatpostsService.findByCategory(page, category);
+    return this.chatpostsService.findByCategory(page, category, tag);
   }
 
   @Get("my-chats")

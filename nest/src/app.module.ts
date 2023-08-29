@@ -75,7 +75,7 @@ export class AppModule implements OnModuleInit {
     DROP VIEW IF EXISTS CategoryTopTags;
 
     CREATE OR REPLACE VIEW CategoryTopTags AS
-    SELECT "categoryName", tag, frequency
+    SELECT ROW_NUMBER() OVER (ORDER BY "categoryName") AS id, "categoryName", tag, frequency
     FROM (
         SELECT
             c."categoryName",

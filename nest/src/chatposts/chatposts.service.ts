@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { CreateChatpostDto } from "./dto/create-chatpost.dto";
 
-import { Repository } from "typeorm";
+import { Like, Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Chatpost } from "./entities/chatpost.entity";
 import { User } from "src/user/entities/user.entity";
@@ -90,12 +90,16 @@ export class ChatpostsService {
   }
 
   //===============구현중====================
-  async findByCategory(page: number, categoryName: string) {
+  async findByCategory(page: number, categoryName?: string, tag?: string) {
     console.log("page, category======", page, categoryName);
-    const whereObj: any =
-      categoryName === "전체"
-        ? { delYn: "N" }
-        : { delYn: "N", category: { categoryName } };
+
+    const whereObj: any = { delYn: "N" };
+
+    if (categoryName) {
+      whereObj.category = { categoryName };
+    } else if (tag) {
+      whereObj.tags = Like(`%${tag}%`);
+    }
 
     const [posts, postCount] = await this.chatpostRepository.findAndCount({
       where: whereObj,
