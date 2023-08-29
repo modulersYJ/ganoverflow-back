@@ -16,6 +16,7 @@ import { ApiParam, ApiTags } from "@nestjs/swagger";
 import { ChatpostsService } from "src/chatposts/chatposts.service";
 import { UserService } from "src/user/user.service";
 import { LikeCommentDto } from "./dto/like-comment.dto";
+import { CreateReCommentDto } from "./dto/create-recomment.dto";
 
 @ApiTags("comments")
 @Controller("comments")
@@ -41,6 +42,31 @@ export class CommentsController {
     const chatPost = await this.chatPostsService.findOne(chatPostId);
     const user = await this.userService.findOneById(req.user.sub);
     return this.commentsService.create(chatPost, user, createCommentDto);
+  }
+
+  @ApiParam({
+    name: "chatPostId",
+    required: true,
+    description: "chatPostId는 parameter로, 커멘트+부모댓글은 body에",
+  })
+  @Post("recomment/:chatPostId")
+  async reComment(
+    @Param("chatPostId")
+    chatPostId: string,
+    @Body() createReCommentDto: CreateReCommentDto,
+    @Req() req
+  ) {
+    const chatPost = await this.chatPostsService.findOne(chatPostId);
+    const user = await this.userService.findOneById(req.user.sub);
+    const parent = await this.commentsService.findOne(
+      createReCommentDto.parent
+    );
+    return this.commentsService.reComment(
+      chatPost,
+      user,
+      createReCommentDto.content,
+      parent
+    );
   }
 
   @Put("/like/:commentId")

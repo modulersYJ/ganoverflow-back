@@ -16,7 +16,11 @@ export class CommentsService {
     private readonly chatPostsService: ChatpostsService
   ) {}
 
-  create(chatPost: Chatpost, user: User, createCommentDto: CreateCommentDto) {
+  async create(
+    chatPost: Chatpost,
+    user: User,
+    createCommentDto: CreateCommentDto
+  ) {
     const commentToSave = {
       chatPost: chatPost,
       ...createCommentDto,
@@ -25,15 +29,36 @@ export class CommentsService {
       user: user,
     };
 
-    this.commentsRepository.save(commentToSave);
+    await this.commentsRepository.save(commentToSave);
     return "This action adds a new comment";
+  }
+
+  async reComment(
+    chatPost: Chatpost,
+    user: User,
+    content: string,
+    parent: Comment
+  ) {
+    const commentToSave = {
+      chatPost: chatPost,
+      content: content,
+      createdAt: new Date(),
+      delYn: "N",
+      user: user,
+      parent: parent,
+    };
+
+    const res = await this.commentsRepository.save(commentToSave);
+    return res;
   }
 
   async findCommentsByChatPostId(chatPostId: string) {
     return this.commentsRepository.find({
       where: {
         chatPost: { chatPostId: chatPostId },
+        parent: null,
       },
+      relations: ["parent", "user", "userLikes", "childComments"],
     });
   }
 
@@ -64,8 +89,14 @@ export class CommentsService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} comment`;
+  async findOne(id: number) {
+    const comment = await this.commentsRepository.findOne({
+      where: { commentId: id },
+    });
+    if (!comment) {
+      throw new NotFoundException(`${id} 댓글을 찾을 수 없습니다.`);
+    }
+    return comment;
   }
 
   update(id: number, updateCommentDto: UpdateCommentDto) {
