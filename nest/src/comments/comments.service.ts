@@ -49,7 +49,9 @@ export class CommentsService {
 
     if (didLike === true) {
       // true일 경우: N:M 테이블에 추가
-      if (!comment.userLikes.some((user) => user.id === user.id)) {
+      if (
+        !comment.userLikes.some((originalUser) => originalUser.id === user.id)
+      ) {
         comment.userLikes.push(user);
         await this.commentsRepository.save(comment);
       }

@@ -49,7 +49,7 @@ export class CommentsController {
     @Body() likeCommentDto: LikeCommentDto,
     @Req() req
   ) {
-    const user = await this.userService.findOneById(req.user.sub);
+    const user = await this.userService.findOneByUsername(req.user.username);
     return this.commentsService.like(commentId, user, likeCommentDto.didLike);
   }
 
