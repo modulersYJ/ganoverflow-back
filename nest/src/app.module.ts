@@ -1,7 +1,7 @@
-import { Module } from "@nestjs/common";
+import { Module, OnModuleInit } from "@nestjs/common";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
-import { TypeOrmModule } from "@nestjs/typeorm";
+import { InjectEntityManager, TypeOrmModule } from "@nestjs/typeorm";
 import { UserModule } from "./user/user.module";
 import { AuthModule } from "./auth/auth.module";
 import { APP_GUARD } from "@nestjs/core";
@@ -16,6 +16,7 @@ import { ChatpostsModule } from "./chatposts/chatposts.module";
 import { FavoritecategoriesModule } from "./favoritecategories/favoritecategories.module";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { ChatPairsModule } from "./chat-pairs/chat-pairs.module";
+import { EntityManager } from "typeorm";
 
 @Module({
   imports: [
@@ -63,4 +64,42 @@ import { ChatPairsModule } from "./chat-pairs/chat-pairs.module";
     },
   ],
 })
-export class AppModule {}
+// export class AppModule {}
+export class AppModule implements OnModuleInit {
+  constructor(
+    @InjectEntityManager() private readonly entityManager: EntityManager
+  ) {}
+
+  async onModuleInit() {
+    await this.entityManager.query(`
+    DROP VIEW IF EXISTS CategoryTopTags;
+  
+    CREATE OR REPLACE VIEW CategoryTopTags AS
+    SELECT ROW_NUMBER() OVER (ORDER BY "categoryName", frequency DESC) AS id, "categoryName", tag, frequency
+    FROM (
+        -- 카테고리별 태그 빈도 집계
+        SELECT
+            c."categoryName",
+            unnest(string_to_array(cp.tags, ',')) as tag,
+            COUNT(*) as frequency,
+            ROW_NUMBER() OVER (PARTITION BY c."categoryName" ORDER BY COUNT(*) DESC) as rn      
+        FROM Chatpost cp
+        JOIN Category c ON cp."categoryCategoryName" = c."categoryName"
+        GROUP BY c."categoryName", tag
+  
+        UNION ALL
+  
+        -- 전체 카테고리에서 태그 빈도 집계
+        SELECT
+            '전체' as "categoryName",
+            unnest(string_to_array(cp.tags, ',')) as tag,
+            COUNT(*) as frequency,
+            ROW_NUMBER() OVER (ORDER BY COUNT(*) DESC) as rn
+        FROM Chatpost cp
+        WHERE cp."categoryCategoryName" IS NOT NULL
+        GROUP BY tag
+    ) t
+    WHERE rn <= 5;
+    `);
+  }
+}

@@ -213,6 +213,16 @@ export class ChatpostsController {
     return this.chatpostsService.findAll(page);
   }
 
+  @Public()
+  @Get("get-by-category")
+  findByCategory(
+    @Query("page") page: number,
+    @Query("category") category: string,
+    @Query("tag") tag: string
+  ) {
+    return this.chatpostsService.findByCategory(page, category, tag);
+  }
+
   @Get("my-chats")
   async findAllByUserId(@Query("userId") userId: string) {
     console.log("User ID: ", userId);
