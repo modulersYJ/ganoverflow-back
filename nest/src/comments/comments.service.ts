@@ -62,6 +62,16 @@ export class CommentsService {
     });
   }
 
+  async findCommentsByUserId(userId: string) {
+    return this.commentsRepository.find({
+      where: {
+        user: { id: userId },
+      },
+      relations: { chatPost: true },
+      take: 10,
+    });
+  }
+
   async like(commentId: number, user: User, didLike: boolean) {
     const comment = await this.commentsRepository.findOne({
       where: { commentId: commentId },
