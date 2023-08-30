@@ -10,10 +10,9 @@ import { User } from "src/user/entities/user.entity";
 import { LoginUserDto } from "./dto/login-user.dto";
 import { RegisterUserDto } from "./dto/register-user.dto";
 import { hashTokenSync } from "src/UTILS/hash.util";
-// import { FoldersService } from "src/folders/folders.service";
-import { ChatpostsService } from "src/chatposts/chatposts.service";
 import { Chatpost } from "src/chatposts/entities/chatpost.entity";
 import { IChatpostBasicInfo, IFolder } from "./entities/IFolders";
+import { Comment } from "src/comments/entities/comment.entity";
 @Injectable()
 export class UserService {
   constructor(
@@ -21,11 +20,17 @@ export class UserService {
     private usersRepository: Repository<User>
   ) {}
 
-  async mypage(user: User, posts: Chatpost[], favoritePosts: Chatpost[]) {
+  async mypage(
+    user: User,
+    posts: Chatpost[],
+    favoritePosts: Chatpost[],
+    comments: Comment[]
+  ) {
     return {
       hi: `${user.username}`,
       myPosts: posts,
       favoritePosts: favoritePosts,
+      comments: comments,
     };
   }
 
