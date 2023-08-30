@@ -7,11 +7,7 @@ import { Star } from "./entities/star.entity";
 import { ChatpostsModule } from "src/chatposts/chatposts.module";
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Star]),
-    ChatpostsModule,
-    forwardRef(() => UserModule),
-  ],
+  imports: [TypeOrmModule.forFeature([Star]), ChatpostsModule, UserModule],
   controllers: [StarsController],
   providers: [StarsService],
   exports: [StarsService],
