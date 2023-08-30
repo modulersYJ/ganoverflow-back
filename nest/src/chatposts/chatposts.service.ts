@@ -148,15 +148,22 @@ export class ChatpostsService {
 
   async findOneWithCount(id: string) {
     const post = await this.chatpostRepository.findOneOrFail({
-      where: { chatPostId: id },
-      relations: [
-        "chatPair",
-        "comments",
-        "comments.user",
-        "user",
-        "stars",
-        "category",
-      ],
+      where: { chatPostId: id, comments: { parent: null } },
+      relations: {
+        chatPair: true,
+        comments: {
+          user: true,
+          userLikes: true,
+          parent: true,
+          childComments: true,
+        },
+        user: true,
+        stars: true,
+        category: true,
+      },
+      order: {
+        comments: { commentId: "ASC" },
+      },
     });
 
     if (post) {
