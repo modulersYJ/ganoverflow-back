@@ -16,7 +16,6 @@ import { AuthGuard } from "src/auth/auth.guard";
 import { Public } from "src/auth/public.decorator";
 import { ChatpostsService } from "src/chatposts/chatposts.service";
 import { StarsService } from "src/stars/stars.service";
-import { CommentsService } from "src/comments/comments.service";
 
 @ApiBearerAuth("jwt")
 @ApiTags("user")
@@ -24,8 +23,8 @@ import { CommentsService } from "src/comments/comments.service";
 export class UserController {
   constructor(
     private readonly userService: UserService,
-    private readonly chatpostsService: ChatpostsService,
-    private readonly commentsService: CommentsService
+    private readonly starsService: StarsService,
+    private readonly chatpostsService: ChatpostsService
   ) {}
 
   @UseGuards(AuthGuard)
@@ -43,8 +42,7 @@ export class UserController {
     const favoritePosts = await this.chatpostsService.findChatpostsUserLiked(
       user
     );
-    const comments = await this.commentsService.findCommentsByUserId(user.id);
-    return this.userService.mypage(user, posts, favoritePosts, comments);
+    return this.userService.mypage(user, posts, favoritePosts);
   }
 
   @Public()

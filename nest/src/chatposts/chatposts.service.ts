@@ -155,7 +155,7 @@ export class ChatpostsService {
           user: true,
           userLikes: true,
           parent: true,
-          childComments: { userLikes: true },
+          childComments: true,
         },
         user: true,
         stars: true,
