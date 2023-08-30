@@ -1,4 +1,4 @@
-import { IsOptional } from "class-validator";
+import { IsArray, IsOptional } from "class-validator";
 import { Category } from "src/categories/entities/category.entity";
 import { ChatPair } from "src/chat-pairs/entities/chat-pair.entity";
 import { Comment } from "src/comments/entities/comment.entity";
@@ -8,8 +8,6 @@ import {
   Column,
   Entity,
   JoinColumn,
-  JoinTable,
-  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -23,15 +21,17 @@ export class Chatpost {
   @Column()
   chatpostName: string;
 
+  //이렇게 명시적으로 칼럼선언해야함.
+  // M-1 관계 JoinColumn 빼줌에 따른 조치
+  @Column({ type: "uuid", nullable: true })
+  userId: string;
+
   @ManyToOne(() => User, (user) => user.chatposts)
   @JoinColumn({ name: "userId" })
-  userId: User;
+  user: User;
 
-  @ManyToOne(() => Category, (category) => category.categoryName, {
-    nullable: true,
-  })
-  @JoinColumn({ name: "categoryName" })
-  categoryName: Category;
+  @ManyToOne((type) => Category)
+  category: Category;
 
   @Column()
   createdAt: Date;
@@ -56,4 +56,9 @@ export class Chatpost {
 
   @OneToMany(() => Star, (star) => star.chatPostId)
   stars: Star[];
+
+  @Column({ type: "simple-array", nullable: true })
+  @IsOptional()
+  @IsArray()
+  tags?: string[];
 }

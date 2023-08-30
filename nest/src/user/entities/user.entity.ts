@@ -92,8 +92,7 @@ export class User {
   @Column({ length: 200, nullable: true })
   social_id: string;
 
-  @OneToMany(() => Chatpost, (chatpost) => chatpost.userId)
-  @JoinColumn({ name: "chatpostId" })
+  @OneToMany(() => Chatpost, (chatpost) => chatpost.user)
   chatposts: Chatpost[];
 
   @OneToMany(() => Comment, (comment) => comment.user)

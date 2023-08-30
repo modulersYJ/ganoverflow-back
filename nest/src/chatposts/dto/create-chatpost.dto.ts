@@ -14,4 +14,8 @@ export class CreateChatpostDto {
   @ApiProperty()
   @IsOptional()
   categoryName: string;
+
+  @ApiProperty()
+  @IsOptional()
+  tags: string[];
 }

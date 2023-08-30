@@ -7,6 +7,7 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
 
@@ -16,7 +17,7 @@ export class Comment {
   commentId: number;
 
   @ManyToOne(() => Chatpost, (chatpost) => chatpost.comments)
-  //   @JoinColumn()
+  @JoinColumn({ name: "chatPostId" })
   chatPost: Chatpost;
 
   @ManyToOne(() => User, (user) => user.id)
@@ -45,4 +46,12 @@ export class Comment {
 
   @Column()
   delYn: string;
+
+  @ManyToOne(() => Comment, (parentComment) => parentComment.childComments, {
+    nullable: true,
+  })
+  parent: Comment;
+
+  @OneToMany(() => Comment, (childComment) => childComment.parent)
+  childComments: Comment[];
 }

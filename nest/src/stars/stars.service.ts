@@ -19,7 +19,6 @@ export class StarsService {
     chatpost: Chatpost,
     user: User
   ) {
-    // ^ star가 있는지 찾는다!
     const star = await this.starRepository
       .createQueryBuilder()
       .where("chatpostid = :chatpostid", {
@@ -28,34 +27,18 @@ export class StarsService {
       .andWhere("userid = :user", { user: user.id })
       .getOne();
 
-    // const query = this.starRepository
-    //   .createQueryBuilder()
-    //   .where("chatpostid = :chatpostid", {
-    //     chatpostid: createStarDto.chatPostId,
-    //   })
-    //   .andWhere("userid = :user", { user: user.id });
-
-    // console.log("query", query.getSql());
-
-    // console.log("star", star);
-
-    let insertOrUpdate = "insert";
-
-    // ^ star 테이블 안에 user + chatpost 조합이 없는 경우 (유저가 처음 누른경우)
     if (!star) {
-      await this.starRepository.save({
+      const newStar = this.starRepository.create({
         user: user,
-        chatPostId: createStarDto,
+        chatPostId: chatpost, // 여기서 chatpost 객체 전체를 전달합니다.
         value: createStarDto.like,
       });
+      await this.starRepository.save(newStar);
     } else {
-      // ^ star 있으면 업데이트 요청!
-      await this.starRepository.update(star, {
-        user: user,
-        chatPostId: chatpost,
+      await this.starRepository.update(star.starId, {
+        chatPostId: chatpost, // 여기서 chatpost 객체 전체를 전달합니다.
         value: createStarDto.like,
       });
-      insertOrUpdate = "updated";
     }
 
     const stars = await this.starRepository
@@ -64,6 +47,7 @@ export class StarsService {
         chatpostid: createStarDto.chatPostId,
       })
       .getMany();
+
     return {
       stars: stars,
       count: stars.reduce((acc, curr) => acc + curr.value, 0),

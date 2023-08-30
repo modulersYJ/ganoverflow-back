@@ -75,4 +75,19 @@ export class AuthController {
       throw new UnauthorizedException("Access Token 발급 실패");
     }
   }
+
+  @Post("refresh-extension")
+  @ApiOperation({
+    summary: "Access Token 갱신 - Extension전용",
+    description: "새로운 Access Token을 반환합니다 - Extension전용 ",
+  })
+  async refreshExtension(@Body("refresh_token") refreshToken: string) {
+    try {
+      const user = await this.authService.resolveRefreshToken(refreshToken);
+      const newAccessToken = await this.authService.generateAccessToken(user);
+      return { access_token: newAccessToken };
+    } catch (e: any) {
+      throw new UnauthorizedException("Access Token 발급 실패");
+    }
+  }
 }
