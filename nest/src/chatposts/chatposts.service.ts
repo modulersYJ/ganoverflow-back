@@ -163,6 +163,7 @@ export class ChatpostsService {
       },
       order: {
         comments: { commentId: "ASC" },
+        chatPair: { order: "ASC" },
       },
     });
 
