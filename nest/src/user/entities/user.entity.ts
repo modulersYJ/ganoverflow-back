@@ -41,6 +41,9 @@ export class User {
   @Column({ length: 100 })
   nickname: string;
 
+  @Column({ length: 300, nullable: true })
+  imgUrl: string;
+
   @Column({
     type: "enum",
     enum: ["N", "R", "S"],

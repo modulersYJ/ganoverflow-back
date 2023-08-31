@@ -89,8 +89,7 @@ export class ChatpostsService {
     return { posts: posts, postCount: postCount };
   }
 
-  //===============구현중====================
-  async findByCategory(
+  async findAllOrFilter(
     page: number,
     categoryName?: string,
     tag?: string,

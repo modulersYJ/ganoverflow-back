@@ -31,12 +31,17 @@ export class AuthController {
     description: "jwt를 돌려줍니다",
   })
   async login(@Body() loginUserDto: LoginUserDto, @Res() res: Response) {
-    const { access_token, refresh_token, nickname, id } =
+    const { access_token, refresh_token, nickname, id, imgUrl } =
       await this.authService.login(loginUserDto);
 
     this.authService.setCookieWithRefreshToken(res, refresh_token);
 
-    return res.send({ access_token: access_token, nickname: nickname, id: id });
+    return res.send({
+      access_token: access_token,
+      nickname: nickname,
+      id: id,
+      imgUrl: imgUrl,
+    });
   }
 
   @Public()
