@@ -209,18 +209,19 @@ export class ChatpostsController {
 
   @Public()
   @Get("")
-  findAll(@Query("page") page: number) {
-    return this.chatpostsService.findAll(page);
+  findAll(@Query("page") page: number, @Query("keyword") keyword: string) {
+    return this.chatpostsService.findAll(page, keyword);
   }
 
   @Public()
   @Get("get-by-category")
-  findByCategory(
+  findAllOrFilter(
     @Query("page") page: number,
     @Query("category") category: string,
-    @Query("tag") tag: string
+    @Query("tag") tag: string,
+    @Query("keyword") keyword: string
   ) {
-    return this.chatpostsService.findByCategory(page, category, tag);
+    return this.chatpostsService.findAllOrFilter(page, category, tag, keyword);
   }
 
   @Get("my-chats")
