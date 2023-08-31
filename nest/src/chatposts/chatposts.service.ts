@@ -70,9 +70,9 @@ export class ChatpostsService {
     return newPostName;
   }
 
-  async findAll(page: number) {
+  async findAll(page: number, keyword?: string) {
     const [posts, postCount] = await this.chatpostRepository.findAndCount({
-      where: { delYn: "N" },
+      where: { delYn: "N", chatpostName: Like(`%${keyword}%`) },
       relations: {
         chatPair: true,
         user: true,
@@ -90,8 +90,13 @@ export class ChatpostsService {
   }
 
   //===============구현중====================
-  async findByCategory(page: number, categoryName?: string, tag?: string) {
-    console.log("page, category======", page, categoryName);
+  async findByCategory(
+    page: number,
+    categoryName?: string,
+    tag?: string,
+    keyword?: string
+  ) {
+    console.log("page, category, keyword=====", page, categoryName, keyword);
 
     const whereObj: any = { delYn: "N" };
 
@@ -99,6 +104,18 @@ export class ChatpostsService {
       whereObj.category = { categoryName };
     } else if (tag) {
       whereObj.tags = Like(`%${tag}%`);
+    }
+
+    // ! TYPEORM의 WHERE 절 내 OR 연산자 사용법!
+    // userRepository.find({
+    //   where: [
+    //     { firstName: "Timber", lastName: "Saw" },
+    //     { firstName: "Stan", lastName: "Lee" },
+    //  ],
+    //  })
+
+    if (keyword) {
+      whereObj.chatpostName = Like(`%${keyword}%`);
     }
 
     const [posts, postCount] = await this.chatpostRepository.findAndCount({
