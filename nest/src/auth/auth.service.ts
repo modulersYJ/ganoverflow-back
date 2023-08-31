@@ -19,6 +19,7 @@ export class AuthService {
       const resUserData = {
         id: user.id,
         nickname: user.nickname,
+        imgUrl: user.imgUrl,
         access_token: await this.generateAccessToken(user),
         refresh_token: await this.generateRefreshToken(user),
       };

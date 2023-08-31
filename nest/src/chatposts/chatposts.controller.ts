@@ -215,13 +215,13 @@ export class ChatpostsController {
 
   @Public()
   @Get("get-by-category")
-  findByCategory(
+  findAllOrFilter(
     @Query("page") page: number,
     @Query("category") category: string,
     @Query("tag") tag: string,
     @Query("keyword") keyword: string
   ) {
-    return this.chatpostsService.findByCategory(page, category, tag, keyword);
+    return this.chatpostsService.findAllOrFilter(page, category, tag, keyword);
   }
 
   @Get("my-chats")

@@ -46,9 +46,18 @@ export class UserService {
     // 패스워드 해싱
     const hashedPassword = await bcrypt.hash(registerUserDto.password, 10);
 
+    // 기본 이미지 랜덤 할당
+    const baseS3Url =
+      "https://ebizcap.s3.ap-northeast-2.amazonaws.com/ganoverflow_user_profile/";
+    const availableColors = ["primary", "red", "blue", "yellow", "white"];
+    const randomIndex = Math.floor(Math.random() * availableColors.length);
+    const randomColor = availableColors[randomIndex];
+    const imgUrl = `${baseS3Url}user_${randomColor}.svg`;
+
     const user = {
       ...registerUserDto,
       password: hashedPassword,
+      imgUrl: imgUrl,
       // status: "N",
       provider: null,
       social_id: null,
