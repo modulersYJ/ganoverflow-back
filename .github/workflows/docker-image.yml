@@ -37,10 +37,9 @@ jobs:
       - name: SSH Remote Commands
         uses: appleboy/ssh-action@v0.1.10
         with:
-          host: 158.180.72.83
+          host: ${{ secrets.SERVER_PUBLIC_IP }}
           command_timeout: 200m
           username: ${{ secrets.SERVER_USERNAME }}
-          password: ${{ secrets.SERVER_PASSWORD }}
           script: |
             cd ganoverflow
             docker pull ${{ env.IMAGE_NAME }}
